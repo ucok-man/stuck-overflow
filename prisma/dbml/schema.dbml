@@ -1,0 +1,211 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  clerkId String [unique, not null]
+  name String [not null]
+  username String [unique, not null]
+  email String [unique, not null]
+  password String
+  bio String
+  picture String [not null]
+  location String
+  portfolioWebsite String
+  reputation Int [not null, default: 0]
+  joinedAt DateTime [default: `now()`, not null]
+  questions Question [not null]
+  savedQuestions SavedQuestion [not null]
+  answers Answer [not null]
+  interactions Interaction [not null]
+  upvotedQuestions QuestionUpvote [not null]
+  downvotedQuestions QuestionDownvote [not null]
+  upvotedAnswers AnswerUpvote [not null]
+  downvotedAnswers AnswerDownvote [not null]
+  followedTags TagFollower [not null]
+}
+
+Table Question {
+  id String [pk]
+  title String [not null]
+  content String [not null]
+  views Int [not null, default: 0]
+  createdAt DateTime [default: `now()`, not null]
+  authorId String [not null]
+  author User [not null]
+  answers Answer [not null]
+  interactions Interaction [not null]
+  tags QuestionTag [not null]
+  upvotes QuestionUpvote [not null]
+  downvotes QuestionDownvote [not null]
+  savedBy SavedQuestion [not null]
+}
+
+Table Answer {
+  id String [pk]
+  content String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  authorId String [not null]
+  author User [not null]
+  questionId String [not null]
+  question Question [not null]
+  interactions Interaction [not null]
+  upvotes AnswerUpvote [not null]
+  downvotes AnswerDownvote [not null]
+}
+
+Table Tag {
+  id String [pk]
+  name String [unique, not null]
+  description String [not null]
+  createdOn DateTime [default: `now()`, not null]
+  interactions InteractionTag [not null]
+  questions QuestionTag [not null]
+  followers TagFollower [not null]
+}
+
+Table Interaction {
+  id String [pk]
+  action String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  tags InteractionTag [not null]
+  userId String [not null]
+  user User [not null]
+  questionId String
+  question Question
+  answerId String
+  answer Answer
+}
+
+Table SavedQuestion {
+  userId String [not null]
+  user User [not null]
+  questionId String [not null]
+  question Question [not null]
+
+  indexes {
+    (userId, questionId) [pk]
+  }
+}
+
+Table QuestionUpvote {
+  userId String [not null]
+  user User [not null]
+  questionId String [not null]
+  question Question [not null]
+
+  indexes {
+    (userId, questionId) [pk]
+  }
+}
+
+Table QuestionDownvote {
+  userId String [not null]
+  user User [not null]
+  questionId String [not null]
+  question Question [not null]
+
+  indexes {
+    (userId, questionId) [pk]
+  }
+}
+
+Table AnswerUpvote {
+  userId String [not null]
+  user User [not null]
+  answerId String [not null]
+  answer Answer [not null]
+
+  indexes {
+    (userId, answerId) [pk]
+  }
+}
+
+Table AnswerDownvote {
+  userId String [not null]
+  user User [not null]
+  answerId String [not null]
+  answer Answer [not null]
+
+  indexes {
+    (userId, answerId) [pk]
+  }
+}
+
+Table QuestionTag {
+  questionId String [not null]
+  question Question [not null]
+  tagId String [not null]
+  tag Tag [not null]
+
+  indexes {
+    (questionId, tagId) [pk]
+  }
+}
+
+Table TagFollower {
+  userId String [not null]
+  user User [not null]
+  tagId String [not null]
+  tag Tag [not null]
+
+  indexes {
+    (userId, tagId) [pk]
+  }
+}
+
+Table InteractionTag {
+  interactionId String [not null]
+  interaction Interaction [not null]
+  tagId String [not null]
+  tag Tag [not null]
+
+  indexes {
+    (interactionId, tagId) [pk]
+  }
+}
+
+Ref: Question.authorId > User.id [delete: Cascade]
+
+Ref: Answer.authorId > User.id [delete: Cascade]
+
+Ref: Answer.questionId > Question.id [delete: Cascade]
+
+Ref: Interaction.userId > User.id [delete: Cascade]
+
+Ref: Interaction.questionId > Question.id
+
+Ref: Interaction.answerId > Answer.id
+
+Ref: SavedQuestion.userId > User.id [delete: Cascade]
+
+Ref: SavedQuestion.questionId > Question.id [delete: Cascade]
+
+Ref: QuestionUpvote.userId > User.id [delete: Cascade]
+
+Ref: QuestionUpvote.questionId > Question.id [delete: Cascade]
+
+Ref: QuestionDownvote.userId > User.id [delete: Cascade]
+
+Ref: QuestionDownvote.questionId > Question.id [delete: Cascade]
+
+Ref: AnswerUpvote.userId > User.id [delete: Cascade]
+
+Ref: AnswerUpvote.answerId > Answer.id [delete: Cascade]
+
+Ref: AnswerDownvote.userId > User.id [delete: Cascade]
+
+Ref: AnswerDownvote.answerId > Answer.id [delete: Cascade]
+
+Ref: QuestionTag.questionId > Question.id [delete: Cascade]
+
+Ref: QuestionTag.tagId > Tag.id [delete: Cascade]
+
+Ref: TagFollower.userId > User.id [delete: Cascade]
+
+Ref: TagFollower.tagId > Tag.id [delete: Cascade]
+
+Ref: InteractionTag.interactionId > Interaction.id [delete: Cascade]
+
+Ref: InteractionTag.tagId > Tag.id [delete: Cascade]
