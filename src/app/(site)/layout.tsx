@@ -18,8 +18,6 @@ export default function SiteLayout({ children }: Props) {
 
         {/* <RightSidebar /> */}
       </div>
-
-      {/* <Toaster /> */}
     </main>
   );
 }

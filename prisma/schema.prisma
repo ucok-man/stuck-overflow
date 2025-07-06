@@ -24,15 +24,16 @@ model User {
     reputation       Int      @default(0)
     joinedAt         DateTime @default(now())
 
-    questions          Question[]
-    savedQuestions     SavedQuestion[]
-    answers            Answer[]
-    interactions       Interaction[]
-    upvotedQuestions   QuestionUpvote[]
-    downvotedQuestions QuestionDownvote[]
-    upvotedAnswers     AnswerUpvote[]
-    downvotedAnswers   AnswerDownvote[]
-    followedTags       TagFollower[]
+    questions          Question[] @relation("questionCreated")
+    savedQuestions     Question[] @relation("questionSaved")
+    upvotedQuestions   Question[] @relation("questionUpvoted")
+    downvotedQuestions Question[] @relation("questionDownvoted")
+    answers            Answer[]   @relation("answerCreated")
+    upvotedAnswers     Answer[]   @relation("answerUpvoted")
+    downvotedAnswers   Answer[]   @relation("answerDownvoted")
+    followedTags       Tag[]      @relation("tagFollowed")
+
+    interactions Interaction[]
 }
 
 model Question {
@@ -43,15 +44,15 @@ model Question {
     createdAt DateTime @default(now())
 
     authorId String
-    author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    author   User   @relation("questionCreated", fields: [authorId], references: [id], onDelete: Cascade)
 
-    answers      Answer[]
+    answers   Answer[] @relation("questionAnswers")
+    tags      Tag[]    @relation("questionTag")
+    upvotes   User[]   @relation("questionUpvoted")
+    downvotes User[]   @relation("questionDownvoted")
+    savedBy   User[]   @relation("questionSaved")
+
     interactions Interaction[]
-
-    tags      QuestionTag[]
-    upvotes   QuestionUpvote[]
-    downvotes QuestionDownvote[]
-    savedBy   SavedQuestion[]
 }
 
 model Answer {
@@ -60,15 +61,15 @@ model Answer {
     createdAt DateTime @default(now())
 
     authorId String
-    author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    author   User   @relation("answerCreated", fields: [authorId], references: [id], onDelete: Cascade)
 
     questionId String
-    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+    question   Question @relation("questionAnswers", fields: [questionId], references: [id], onDelete: Cascade)
+
+    upvotes   User[] @relation("answerUpvoted")
+    downvotes User[] @relation("answerDownvoted")
 
     interactions Interaction[]
-
-    upvotes   AnswerUpvote[]
-    downvotes AnswerDownvote[]
 }
 
 model Tag {
@@ -77,9 +78,10 @@ model Tag {
     description String
     createdOn   DateTime @default(now())
 
-    interactions InteractionTag[]
-    questions    QuestionTag[]
-    followers    TagFollower[]
+    questions Question[] @relation("questionTag")
+    followers User[]     @relation("tagFollowed")
+
+    interactions Interaction[]
 }
 
 model Interaction {
@@ -87,7 +89,7 @@ model Interaction {
     action    String
     createdAt DateTime @default(now())
 
-    tags InteractionTag[]
+    tags Tag[]
 
     userId String
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -101,75 +103,75 @@ model Interaction {
 
 // --- EXPLICIT JOIN TABLES for Many-to-Many Relationships ---
 
-model SavedQuestion {
-    userId     String
-    user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    questionId String
-    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+// model SavedQuestion {
+//     userId     String
+//     user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//     questionId String
+//     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-    @@id([userId, questionId])
-}
+//     @@id([userId, questionId])
+// }
 
-model QuestionUpvote {
-    userId     String
-    user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    questionId String
-    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+// model QuestionUpvote {
+//     userId     String
+//     user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//     questionId String
+//     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-    @@id([userId, questionId])
-}
+//     @@id([userId, questionId])
+// }
 
-model QuestionDownvote {
-    userId     String
-    user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    questionId String
-    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+// model QuestionDownvote {
+//     userId     String
+//     user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//     questionId String
+//     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-    @@id([userId, questionId])
-}
+//     @@id([userId, questionId])
+// }
 
-model AnswerUpvote {
-    userId   String
-    user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-    answerId String
-    answer   Answer @relation(fields: [answerId], references: [id], onDelete: Cascade)
+// model AnswerUpvote {
+//     userId   String
+//     user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+//     answerId String
+//     answer   Answer @relation(fields: [answerId], references: [id], onDelete: Cascade)
 
-    @@id([userId, answerId])
-}
+//     @@id([userId, answerId])
+// }
 
-model AnswerDownvote {
-    userId   String
-    user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-    answerId String
-    answer   Answer @relation(fields: [answerId], references: [id], onDelete: Cascade)
+// model AnswerDownvote {
+//     userId   String
+//     user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+//     answerId String
+//     answer   Answer @relation(fields: [answerId], references: [id], onDelete: Cascade)
 
-    @@id([userId, answerId])
-}
+//     @@id([userId, answerId])
+// }
 
-model QuestionTag {
-    questionId String
-    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-    tagId      String
-    tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+// model QuestionTag {
+//     questionId String
+//     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+//     tagId      String
+//     tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
-    @@id([questionId, tagId])
-}
+//     @@id([questionId, tagId])
+// }
 
-model TagFollower {
-    userId String
-    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-    tagId  String
-    tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+// model TagFollower {
+//     userId String
+//     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+//     tagId  String
+//     tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
-    @@id([userId, tagId])
-}
+//     @@id([userId, tagId])
+// }
 
-model InteractionTag {
-    interactionId String
-    interaction   Interaction @relation(fields: [interactionId], references: [id], onDelete: Cascade)
+// model InteractionTag {
+//     interactionId String
+//     interaction   Interaction @relation(fields: [interactionId], references: [id], onDelete: Cascade)
 
-    tagId String
-    tag   Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+//     tagId String
+//     tag   Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
-    @@id([interactionId, tagId])
-}
+//     @@id([interactionId, tagId])
+// }

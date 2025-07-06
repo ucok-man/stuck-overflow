@@ -30,7 +30,7 @@ export const commonRouter = createTRPCRouter({
         const [questions, answers, tags, users] = await Promise.all([
           ctx.db.question.findMany({
             where: {
-              content: {
+              title: {
                 search: term,
                 mode: "insensitive",
               },

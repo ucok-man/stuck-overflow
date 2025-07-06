@@ -8,12 +8,16 @@ export function cn(...inputs: ClassValue[]) {
 
 export const pushUrlQuery = (params: {
   searchParams: string;
-  key: string;
-  value: string | null;
+  items: {
+    key: string;
+    value: string | null;
+  }[];
 }) => {
   const currentUrl = qs.parse(params.searchParams);
 
-  currentUrl[params.key] = params.value;
+  params.items.forEach((item) => {
+    currentUrl[item.key] = item.value;
+  });
 
   return qs.stringifyUrl(
     {

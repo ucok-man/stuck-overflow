@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-// import GlobalSearch from "../search/GlobalSearch";
 import AuthButton from "./auth-button";
 import GlobalSearch from "./global-search";
 import MobileNavbar from "./mobile-navbar";

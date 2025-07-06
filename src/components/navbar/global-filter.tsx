@@ -14,26 +14,36 @@ export default function GlobalFilter() {
   const [active, setActive] = useState(typeParams ?? "");
 
   const handleClick = (item: string) => {
+    /* --------------------- toogle active filter --------------------- */
+
     if (active === item) {
       setActive("");
 
-      const newUrl = pushUrlQuery({
+      const url = pushUrlQuery({
         searchParams: searchParams.toString(),
-        key: "type",
-        value: null,
+        items: [
+          {
+            key: "type",
+            value: null,
+          },
+        ],
       });
 
-      router.push(newUrl, { scroll: false });
+      router.push(url, { scroll: false });
     } else {
       setActive(item);
 
-      const newUrl = pushUrlQuery({
+      const url = pushUrlQuery({
         searchParams: searchParams.toString(),
-        key: "type",
-        value: item.toLowerCase(),
+        items: [
+          {
+            key: "type",
+            value: item.toLowerCase(),
+          },
+        ],
       });
 
-      router.push(newUrl, { scroll: false });
+      router.push(url, { scroll: false });
     }
   };
 

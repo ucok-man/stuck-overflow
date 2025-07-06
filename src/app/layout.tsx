@@ -6,6 +6,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Stuck Overflow | Stack Overflow Clone",
@@ -52,6 +53,7 @@ export default function RootLayout({
               }}
             >
               {children}
+              <Toaster />
             </ClerkProvider>
           </ThemeProvider>
         </TRPCReactProvider>

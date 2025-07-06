@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { pushUrlQuery, removeUrlQuery } from "@/lib/utils";
 import Image from "next/image";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { useDebounceValue, useOnClickOutside } from "usehooks-ts";
 import GlobalResult from "./global-result";
@@ -11,11 +11,10 @@ import GlobalResult from "./global-result";
 
 export default function GlobalSearch() {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const query = searchParams.get("q"); // default to `q` -> from local search
+  const query = searchParams.get("search"); // default to `query` -> from local search
   const [search, setSearch] = useState(query ?? "");
   const [isOpen, setIsOpen] = useState(false);
   const [debouncedSearch] = useDebounceValue(search, 300);
@@ -29,25 +28,24 @@ export default function GlobalSearch() {
     if (debouncedSearch) {
       const newUrl = pushUrlQuery({
         searchParams: searchParams.toString(),
-        key: "global",
-        value: debouncedSearch,
+        items: [{ key: "search", value: debouncedSearch }],
       });
       router.push(newUrl, { scroll: false });
     } else {
       const newUrl = removeUrlQuery({
         searchParams: searchParams.toString(),
-        keysToRemove: ["global", "type"],
+        keysToRemove: ["search", "type"],
       });
       router.push(newUrl, { scroll: false });
     }
-  }, [debouncedSearch, router, pathname, searchParams]);
+  }, [debouncedSearch]);
 
   return (
     <div
       className="relative w-full max-w-[600px] max-lg:hidden"
       ref={containerRef}
     >
-      <div className="bg-light-800_dark-gradient relative flex min-h-[56px] grow items-center gap-1 rounded-xl px-4">
+      <div className="bg-light-800_dark-300 relative flex min-h-[56px] grow items-center gap-1 rounded-xl px-4">
         <Image
           src="/assets/icons/search.svg"
           alt="search"
