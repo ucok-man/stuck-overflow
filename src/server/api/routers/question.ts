@@ -2,7 +2,6 @@ import { auth } from "@clerk/nextjs/server";
 import type { Answer, Question, Tag, User } from "@prisma/client";
 import z from "zod";
 import { createTRPCRouter, privatProcedure, publicProcedure } from "../trpc";
-// import type {Question} from "@prisma/client/runtime/library.js";
 
 export const questionRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -128,6 +127,80 @@ export const questionRouter = createTRPCRouter({
         params.where!.answers = {
           none: {},
         };
+      }
+
+      const questions = await ctx.db.question.findMany(params);
+      return questions as (Question & {
+        author: User;
+        tags: Tag[];
+        answers: Answer[];
+        upvotes: User[];
+        downvotes: User[];
+      })[];
+    }),
+
+  getAllByTag: privatProcedure
+    .input(
+      z.object({
+        tagId: z.string().trim(),
+        query: z.string().trim().nullable().optional(),
+        pageSize: z
+          .string()
+          .trim()
+          .refine((arg) => !isNaN(Number(arg)), { message: "Invalid number" }) // Ensure it's a valid number
+          .transform((arg) => Number(arg))
+          .pipe(z.number().min(1).max(100)) // Validate after transformation
+          .optional()
+          .default("10"),
+        page: z
+          .string()
+          .trim()
+          .refine((arg) => !isNaN(Number(arg)), { message: "Invalid number" }) // Ensure it's a valid number
+          .transform((arg) => Number(arg))
+          .pipe(z.number().min(1).max(1000)) // Validate after transformation
+          .optional()
+          .default("1"),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const term = input.query?.split(" ").join(" & ");
+
+      const params: NonNullable<
+        Parameters<typeof ctx.db.question.findMany>[0]
+      > = {
+        where: {
+          tags: {
+            some: {
+              id: input.tagId,
+            },
+          },
+        },
+        include: {
+          author: true,
+          tags: true,
+          answers: true,
+          upvotes: true,
+          downvotes: true,
+        },
+        take: input.pageSize,
+        skip: (input.page - 1) * input.pageSize,
+      };
+
+      if (term) {
+        params.where!.OR = [
+          {
+            title: {
+              search: term,
+              mode: "insensitive",
+            },
+          },
+          {
+            content: {
+              search: term,
+              mode: "insensitive",
+            },
+          },
+        ];
       }
 
       const questions = await ctx.db.question.findMany(params);

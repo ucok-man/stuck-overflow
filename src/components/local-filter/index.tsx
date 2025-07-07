@@ -39,7 +39,7 @@ export default function LocalFilter(props: Props) {
           key={item.value}
           onClick={() => handleClick(item.value)}
           className={cn(
-            "font-body-medium rounded-lg px-6 py-3 capitalize shadow-none",
+            "font-body-medium cursor-pointer! rounded-lg px-6 py-3 capitalize shadow-none",
             selectedFilter?.value === item.value
               ? "dark:hover:bg-dark-400 bg-primary-100 text-primary-500 hover:bg-primary-100 dark:bg-dark-400 dark:text-primary-500"
               : "bg-light-800 text-light-500 hover:bg-light-800 dark:bg-dark-300 dark:text-light-500 dark:hover:bg-dark-300",

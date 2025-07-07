@@ -49,7 +49,7 @@ export default async function HomePage(props: Props) {
       <div className="mt-11 flex w-full flex-col items-start justify-between gap-5">
         <LocalSearchBox
           iconPosition="left"
-          placeholder="Search for questions"
+          placeholder="Search for question"
           containerClass="w-full"
         />
 

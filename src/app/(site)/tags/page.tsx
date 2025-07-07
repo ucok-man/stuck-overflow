@@ -1,17 +1,21 @@
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
 import LocalFilter from "@/components/local-filter";
 import LocalMobileFilter from "@/components/local-mobile-filter";
 import LocalSearchBox from "@/components/local-search-box";
 import Pagination from "@/components/pagination";
-import { COLLECTION_FILTERS } from "@/lib/constants/collection-filter";
-import type { CollectionFilterType } from "@/lib/types/collection-filter-type";
+import { TAG_FILTERS } from "@/lib/constants/tag-filter";
+import type { TagFilterType } from "@/lib/types/tag-filter-type";
 import { api } from "@/trpc/server";
-import type { Metadata } from "next/types";
+import type { Metadata } from "next";
 import EmptyState from "./empty-state";
-import QuestionCard from "./question-card";
+import TagCard from "./tag-card";
 
 export const metadata: Metadata = {
-  title: "Collections | Stuck Overflow",
+  title: "Tag | Stuck Overflow",
 };
+
 type Props = {
   searchParams: Promise<{
     query?: string;
@@ -20,48 +24,51 @@ type Props = {
   }>;
 };
 
-export default async function CollectionPage(props: Props) {
+export default async function TagsPage(props: Props) {
   const searchParams = await props.searchParams;
 
-  const questions = await api.question.getCollection({
+  const tags = await api.tag.getAll({
     query: searchParams.query,
-    filter: COLLECTION_FILTERS.find((val) => val.value === searchParams.filter)
-      ?.value as CollectionFilterType | undefined,
+    filter: TAG_FILTERS.find((val) => val.value === searchParams.filter)
+      ?.value as TagFilterType | undefined,
     page: searchParams.page,
   });
 
   return (
     <div>
-      <h1 className="font-h1-bold text-dark-100_light-900">Saved Questions</h1>
+      <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
+        <h1 className="font-h1-bold text-dark-100_light-900">All Questions</h1>
+
+        <Link href="/ask-question" className="flex justify-end max-sm:w-full">
+          <Button className="bg-primary-gradient !text-light-900 min-h-[46px] px-4 py-3">
+            Ask a Question
+          </Button>
+        </Link>
+      </div>
 
       <div className="mt-11 flex w-full flex-col items-start justify-between gap-5">
         <LocalSearchBox
           iconPosition="left"
-          placeholder="Search for question"
+          placeholder="Search for a tag"
           containerClass="w-full"
         />
 
         <LocalMobileFilter
-          filters={COLLECTION_FILTERS}
+          filters={TAG_FILTERS}
           containerClass="md:hidden flex max-sm:w-full"
         />
-        <LocalFilter
-          filters={COLLECTION_FILTERS}
-          containerClass="hidden md:flex"
-        />
+        <LocalFilter filters={TAG_FILTERS} containerClass="hidden md:flex" />
       </div>
 
       <div className="mt-10 flex w-full flex-col gap-6">
-        {questions.length > 0 ? (
-          questions.map((question) => (
-            <QuestionCard key={question.id} question={question} />
-          ))
+        {tags.length > 0 ? (
+          tags.map((tag) => <TagCard key={tag.id} tag={tag} />)
         ) : (
           <EmptyState />
         )}
       </div>
 
-      {questions.length > 0 && (
+      {tags.length > 0 && (
         <div className="mt-10">
           <Pagination
             page={

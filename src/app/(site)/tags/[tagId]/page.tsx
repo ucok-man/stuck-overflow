@@ -1,18 +1,18 @@
-import LocalFilter from "@/components/local-filter";
-import LocalMobileFilter from "@/components/local-mobile-filter";
 import LocalSearchBox from "@/components/local-search-box";
 import Pagination from "@/components/pagination";
-import { COLLECTION_FILTERS } from "@/lib/constants/collection-filter";
-import type { CollectionFilterType } from "@/lib/types/collection-filter-type";
 import { api } from "@/trpc/server";
-import type { Metadata } from "next/types";
+import type { Metadata } from "next";
 import EmptyState from "./empty-state";
 import QuestionCard from "./question-card";
 
 export const metadata: Metadata = {
-  title: "Collections | Stuck Overflow",
+  title: "Tag | Stuck Overflow",
 };
+
 type Props = {
+  params: Promise<{
+    tagId: string;
+  }>;
   searchParams: Promise<{
     query?: string;
     filter?: string;
@@ -20,34 +20,26 @@ type Props = {
   }>;
 };
 
-export default async function CollectionPage(props: Props) {
+export default async function QuestionsByTagPage(props: Props) {
+  const params = await props.params;
   const searchParams = await props.searchParams;
 
-  const questions = await api.question.getCollection({
+  const tag = await api.tag.getById({ tagId: params.tagId });
+  const questions = await api.question.getAllByTag({
+    tagId: params.tagId,
     query: searchParams.query,
-    filter: COLLECTION_FILTERS.find((val) => val.value === searchParams.filter)
-      ?.value as CollectionFilterType | undefined,
     page: searchParams.page,
   });
 
   return (
     <div>
-      <h1 className="font-h1-bold text-dark-100_light-900">Saved Questions</h1>
+      <h1 className="font-h1-bold text-dark-100_light-900">{tag.name}</h1>
 
       <div className="mt-11 flex w-full flex-col items-start justify-between gap-5">
         <LocalSearchBox
           iconPosition="left"
           placeholder="Search for question"
           containerClass="w-full"
-        />
-
-        <LocalMobileFilter
-          filters={COLLECTION_FILTERS}
-          containerClass="md:hidden flex max-sm:w-full"
-        />
-        <LocalFilter
-          filters={COLLECTION_FILTERS}
-          containerClass="hidden md:flex"
         />
       </div>
 
