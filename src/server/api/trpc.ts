@@ -11,7 +11,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@/server/db";
-import { auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 /**
  * 1. CONTEXT
@@ -26,8 +26,11 @@ import { auth } from "@clerk/nextjs/server";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const user = await currentUser();
+
   return {
     db,
+    user,
     ...opts,
   };
 };
@@ -102,16 +105,31 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  */
 
 const isAuthenticated = t.middleware(async ({ next, ctx }) => {
-  const user = await auth();
-  if (!user) {
+  if (!ctx.user) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "You must be logged in to access this resource",
     });
   }
 
+  const user = await ctx.db.user.findUnique({
+    where: {
+      clerkId: ctx.user.id,
+    },
+  });
+
+  if (!user) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Clerk and local database user is not syncing",
+    });
+  }
+
   return next({
-    ctx: { ...ctx, user },
+    ctx: {
+      ...ctx,
+      user: user,
+    },
   });
 });
 

@@ -63,7 +63,7 @@ export default function MobileNavbar() {
                   pathname === item.route;
 
                 if (item.route === "/profile" && !clerkId) return null;
-                if (item.route === "/collection" && !clerkId) return null;
+                if (item.route === "/collections" && !clerkId) return null;
 
                 return (
                   <SheetClose asChild key={item.route}>

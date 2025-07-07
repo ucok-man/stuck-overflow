@@ -11,7 +11,7 @@ export const SIDEBAR_LINKS = [
   },
   {
     imgURL: "/assets/icons/star.svg",
-    route: "/collection",
+    route: "/collections",
     label: "Collections",
   },
   {

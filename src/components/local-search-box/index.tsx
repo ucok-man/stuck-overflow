@@ -40,14 +40,14 @@ export default function LocalSearchBox(props: Props) {
       return;
     }
 
-    if (!searchParams.get("filter")) {
-      const url = removeUrlQuery({
-        searchParams: searchParams.toString(),
-        keysToRemove: ["query", "page"],
-      });
-      router.push(url, { scroll: false });
-      return;
-    }
+    // if (!searchParams.get("filter")) {
+    //   const url = removeUrlQuery({
+    //     searchParams: searchParams.toString(),
+    //     keysToRemove: ["query", "page"],
+    //   });
+    //   router.push(url, { scroll: false });
+    //   return;
+    // }
 
     const url = removeUrlQuery({
       searchParams: searchParams.toString(),

@@ -2,17 +2,12 @@ import LocalFilter from "@/components/local-filter";
 import LocalMobileFilter from "@/components/local-mobile-filter";
 import LocalSearchBox from "@/components/local-search-box";
 import Pagination from "@/components/pagination";
-import { USER_FILTERS } from "@/lib/constants/user-filter";
-import type { UserFilterType } from "@/lib/types/user-filter-type";
-import { cn } from "@/lib/utils";
+import { COLLECTION_FILTERS } from "@/lib/constants/collection-filter";
+import type { CollectionFilterType } from "@/lib/types/collection-filter-type";
 import { api } from "@/trpc/server";
-import type { Metadata } from "next";
+import { auth } from "@clerk/nextjs/server";
 import EmptyState from "./empty-state";
-import UserCard from "./user-card";
-
-export const metadata: Metadata = {
-  title: "Community | Stuck Overflow",
-};
+import QuestionCard from "./question-card";
 
 type Props = {
   searchParams: Promise<{
@@ -22,48 +17,49 @@ type Props = {
   }>;
 };
 
-export default async function CommunityPage(props: Props) {
+export default async function CollectionPage(props: Props) {
   const searchParams = await props.searchParams;
-  const users = await api.user.getAll({
+  const { userId: clerkId } = await auth();
+
+  const questions = await api.question.getCollection({
     query: searchParams.query,
-    filter: USER_FILTERS.find((val) => val.value === searchParams.filter)
-      ?.value as UserFilterType | undefined,
+    filter: COLLECTION_FILTERS.find((val) => val.value === searchParams.filter)
+      ?.value as CollectionFilterType | undefined,
     page: searchParams.page,
   });
 
   return (
     <div>
-      <h1 className="font-h1-bold text-dark-100_light-900">All Users</h1>
+      <h1 className="font-h1-bold text-dark-100_light-900">Saved Questions</h1>
 
       <div className="mt-11 flex w-full flex-col items-start justify-between gap-5">
         <LocalSearchBox
           iconPosition="left"
-          placeholder="Search for a user"
+          placeholder="Search for questions"
           containerClass="w-full"
         />
 
         <LocalMobileFilter
-          filters={USER_FILTERS}
+          filters={COLLECTION_FILTERS}
           containerClass="md:hidden flex max-sm:w-full"
         />
-        <LocalFilter filters={USER_FILTERS} containerClass="hidden md:flex" />
+        <LocalFilter
+          filters={COLLECTION_FILTERS}
+          containerClass="hidden md:flex"
+        />
       </div>
 
-      {/* TODO: complete the grid layout */}
-      <section
-        className={cn(
-          "mt-12",
-          users.length > 0 ? "grid gap-3 xl:grid-cols-4" : "flex w-full",
-        )}
-      >
-        {users.length > 0 ? (
-          users.map((user) => <UserCard key={user.id} user={user} />)
+      <div className="mt-10 flex w-full flex-col gap-6">
+        {questions.length > 0 ? (
+          questions.map((question) => (
+            <QuestionCard key={question.id} question={question} />
+          ))
         ) : (
           <EmptyState />
         )}
-      </section>
+      </div>
 
-      {users.length > 0 && (
+      {questions.length > 0 && (
         <div className="mt-10">
           <Pagination
             page={

@@ -22,7 +22,7 @@ export default function EmptyState() {
       />
 
       <h2 className="font-h2-bold text-dark-200_light-900 mt-8">
-        There’s no question to show
+        There’s no question saved to show
       </h2>
       <p className="font-body-regular text-dark-500_light-700 my-3.5 max-w-md text-center">
         Be the first to break the silence! 🚀 Ask a Question and kickstart the
