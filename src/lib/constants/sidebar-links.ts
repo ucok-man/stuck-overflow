@@ -1,4 +1,4 @@
-export const MOBILE_NAV_LINKS = [
+export const SIDEBAR_LINKS = [
   {
     imgURL: "/assets/icons/home.svg",
     route: "/",
