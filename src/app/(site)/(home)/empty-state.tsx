@@ -1,15 +1,8 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "../ui/button";
 
-interface Props {
-  title: string;
-  description: string;
-  actionHref: string;
-  actionTitle: string;
-}
-
-export default function EmptySatate(props: Props) {
+export default function EmptyState() {
   return (
     <div className="mt-10 flex w-full flex-col items-center justify-center">
       <Image
@@ -29,15 +22,17 @@ export default function EmptySatate(props: Props) {
       />
 
       <h2 className="font-h2-bold text-dark-200_light-900 mt-8">
-        {props.title}
+        There’s no question to show
       </h2>
       <p className="font-body-regular text-dark-500_light-700 my-3.5 max-w-md text-center">
-        {props.description}
+        Be the first to break the silence! 🚀 Ask a Question and kickstart the
+        discussion. our query could be the next big thing others learn from. Get
+        involved! 💡
       </p>
 
-      <Link href={props.actionHref}>
+      <Link href={"/ask-question"}>
         <Button className="font-paragraph-medium bg-primary-500 text-light-900 hover:bg-primary-500 dark:bg-primary-500 dark:text-light-900 mt-5 min-h-[46px] rounded-lg px-4 py-3">
-          {props.actionTitle}
+          Ask a Question
         </Button>
       </Link>
     </div>

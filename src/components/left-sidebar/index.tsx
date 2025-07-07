@@ -21,6 +21,7 @@ export default function LeftSidebar() {
             pathname === item.route;
 
           if (item.route === "/profile" && !clerkId) return null;
+          if (item.route === "/collection" && !clerkId) return null;
 
           return (
             <Link

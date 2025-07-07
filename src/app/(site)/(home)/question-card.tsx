@@ -1,13 +1,12 @@
+import Metric from "@/components/metric";
+import RenderTag from "@/components/render-tag";
 import { formatAndDivideNumber } from "@/lib/utils";
 import { SignedIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import type { Answer, Question, Tag, User } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
-import Link from "next/link";
-import Metric from "../metric";
-import RenderTag from "../render-tag";
-// import EditDeleteAction from "../shared/EditDeleteAction";
 import Image from "next/image";
+import Link from "next/link";
 
 type Props = {
   question: Question & {

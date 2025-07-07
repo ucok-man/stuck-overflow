@@ -1,16 +1,16 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-import EmptySatate from "@/components/empty-state";
 import LocalFilter from "@/components/local-filter";
 import LocalMobileFilter from "@/components/local-mobile-filter";
 import LocalSearchBox from "@/components/local-search-box";
 import Pagination from "@/components/pagination";
-import QuestionCard from "@/components/question-card";
 import { QUESTION_FILTERS } from "@/lib/constants/question-filter";
 import type { QuestionFilterType } from "@/lib/types/question-filter-type";
 import { api } from "@/trpc/server";
 import type { Metadata } from "next";
+import EmptyState from "./empty-state";
+import QuestionCard from "./question-card";
 
 export const metadata: Metadata = {
   title: "Home | Stuck Overflow",
@@ -69,18 +69,17 @@ export default async function HomePage(props: Props) {
             <QuestionCard key={question.id} question={question} />
           ))
         ) : (
-          <EmptySatate
-            title="There’s no question to show"
-            description="Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡"
-            actionHref="/ask-question"
-            actionTitle="Ask a Question"
-          />
+          <EmptyState />
         )}
       </div>
 
       {questions.length > 0 && (
         <div className="mt-10">
-          <Pagination page={Number(searchParams.page) ?? 1} />
+          <Pagination
+            page={
+              isNaN(Number(searchParams.page)) ? 1 : Number(searchParams.page)
+            }
+          />
         </div>
       )}
     </div>

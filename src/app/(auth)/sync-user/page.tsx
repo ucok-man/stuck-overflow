@@ -32,7 +32,7 @@ export default async function SyncUserPage() {
         clerkId: user.id,
         email: user.emailAddresses[0]?.emailAddress ?? "",
         name: user.fullName ?? "?",
-        username: user.fullName ?? "?",
+        username: user.fullName?.toLowerCase().split(" ").join("_") ?? "?",
         picture: user.imageUrl,
       },
     });

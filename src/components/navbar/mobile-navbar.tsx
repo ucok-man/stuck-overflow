@@ -10,7 +10,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { MOBILE_NAV_LINKS } from "@/lib/constants/mobile-nav-links";
-import { SignedOut } from "@clerk/nextjs";
+import { SignedOut, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -18,6 +18,7 @@ import { DialogDescription, DialogTitle } from "../ui/dialog";
 
 export default function MobileNavbar() {
   const pathname = usePathname();
+  const { userId: clerkId } = useAuth();
 
   return (
     <Sheet>
@@ -60,6 +61,9 @@ export default function MobileNavbar() {
                 const isActive =
                   (pathname.includes(item.route) && item.route.length > 1) ||
                   pathname === item.route;
+
+                if (item.route === "/profile" && !clerkId) return null;
+                if (item.route === "/collection" && !clerkId) return null;
 
                 return (
                   <SheetClose asChild key={item.route}>
