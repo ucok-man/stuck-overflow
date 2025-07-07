@@ -71,7 +71,7 @@ export default function LocalMobileFilter(props: Props) {
 
         <SelectContent
           className={cn(
-            "card-wrapper border-light",
+            "dark:bg-dark-300 bg-light-800 border-light",
             "min-w-[var(--radix-select-trigger-width)] p-1",
             "rounded-lg",
             "z-50",
@@ -86,11 +86,11 @@ export default function LocalMobileFilter(props: Props) {
                 value={item.value}
                 className={cn(
                   "flex-between relative cursor-pointer rounded-md px-3 py-3",
-                  "font-body-medium text-dark-500_light-700",
+                  "font-body-medium dark:text-light-700 text-primary/85",
                   "hover:bg-light-800_dark-400 transition-colors duration-150",
-                  "focus:bg-primary-100 dark:focus:bg-primary-500/10",
+                  "focus:bg-primary-100 dark:focus:bg-primary-500/80",
                   "focus:text-primary-500",
-                  "data-[state=checked]:bg-primary-100 dark:data-[state=checked]:bg-primary-500/10",
+                  "data-[state=checked]:bg-primary-100 dark:data-[state=checked]:bg-primary-500/80",
                   "data-[state=checked]:text-primary-500",
                   "no-focus",
                 )}

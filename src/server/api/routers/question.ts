@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import type { Question } from "@prisma/client";
+import type { Answer, Question, Tag, User } from "@prisma/client";
 import z from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 // import type {Question} from "@prisma/client/runtime/library.js";
@@ -42,6 +42,9 @@ export const questionRouter = createTRPCRouter({
         include: {
           author: true,
           tags: true,
+          answers: true,
+          upvotes: true,
+          downvotes: true,
         },
         take: input.pageSize,
         skip: (input.page - 1) * input.pageSize,
@@ -71,7 +74,14 @@ export const questionRouter = createTRPCRouter({
             clerkId: clerkId ?? "",
           },
         });
-        if (!user) return [] as Question[];
+        if (!user)
+          return [] as (Question & {
+            author: User;
+            tags: Tag[];
+            answers: Answer[];
+            upvotes: User[];
+            downvotes: User[];
+          })[];
 
         const interactions = await ctx.db.interaction.findMany({
           where: {
@@ -82,7 +92,14 @@ export const questionRouter = createTRPCRouter({
           },
         });
 
-        if (!interactions.length) return [] as Question[];
+        if (!interactions.length)
+          return [] as (Question & {
+            author: User;
+            tags: Tag[];
+            answers: Answer[];
+            upvotes: User[];
+            downvotes: User[];
+          })[];
 
         const tags = [...new Set(interactions.map((i) => i.tags).flat())];
 
@@ -113,9 +130,13 @@ export const questionRouter = createTRPCRouter({
         };
       }
 
-      console.log({ params });
-
       const questions = await ctx.db.question.findMany(params);
-      return questions;
+      return questions as (Question & {
+        author: User;
+        tags: Tag[];
+        answers: Answer[];
+        upvotes: User[];
+        downvotes: User[];
+      })[];
     }),
 });

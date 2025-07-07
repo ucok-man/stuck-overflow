@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+import EmptySatate from "@/components/empty-state";
 import LocalFilter from "@/components/local-filter";
 import LocalMobileFilter from "@/components/local-mobile-filter";
 import LocalSearchBox from "@/components/local-search-box";
+import Pagination from "@/components/pagination";
+import QuestionCard from "@/components/question-card";
 import { QUESTION_FILTERS } from "@/lib/constants/question-filter";
 import type { QuestionFilterType } from "@/lib/types/question-filter-type";
 import { api } from "@/trpc/server";
@@ -30,30 +33,6 @@ export default async function HomePage(props: Props) {
       ?.value as QuestionFilterType | undefined,
     page: searchParams.page,
   });
-  // const { userId: clerkId } = await auth();
-
-  // let result;
-
-  // if (searchParams?.filter === "recommended") {
-  //   if (userId) {
-  //     result = await getRecommendedQuestions({
-  //       userId,
-  //       searchQuery: searchParams.q,
-  //       page: searchParams.page ? +searchParams.page : 1,
-  //     });
-  //   } else {
-  //     result = {
-  //       questions: [],
-  //       isNext: false,
-  //     };
-  //   }
-  // } else {
-  //   result = await getQuestions({
-  //     searchQuery: searchParams.q,
-  //     filter: searchParams.filter,
-  //     page: searchParams.page ? +searchParams.page : 1,
-  //   });
-  // }
 
   return (
     <div>
@@ -87,33 +66,23 @@ export default async function HomePage(props: Props) {
       <div className="mt-10 flex w-full flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question) => (
-            <QuestionCard
-              key={question._id}
-              _id={question._id}
-              title={question.title}
-              tags={question.tags}
-              author={question.author}
-              upvotes={question.upvotes}
-              views={question.views}
-              answers={question.answers}
-              createdAt={question.createdAt}
-            />
+            <QuestionCard key={question.id} question={question} />
           ))
         ) : (
-          <NoResult
+          <EmptySatate
             title="There’s no question to show"
             description="Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡"
-            link="/ask-question"
-            linkTitle="Ask a Question"
+            actionHref="/ask-question"
+            actionTitle="Ask a Question"
           />
         )}
       </div>
-      {/* <div className="mt-10">
-        <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
-          isNext={result.isNext}
-        />
-      </div> */}
+
+      {questions.length > 0 && (
+        <div className="mt-10">
+          <Pagination page={Number(searchParams.page) ?? 1} />
+        </div>
+      )}
     </div>
   );
 }
