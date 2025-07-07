@@ -1,12 +1,12 @@
 import "@/styles/globals.css";
 
 import { type Metadata } from "next";
-import { ThemeProvider } from "next-themes";
 import { Inter, Space_Grotesk } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
-import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
+import AuthProvider from "./_providers/auth-provider";
+import ThemeProvider from "./_providers/theme-provider";
 
 export const metadata: Metadata = {
   title: "Stuck Overflow | Stack Overflow Clone",
@@ -37,24 +37,11 @@ export default function RootLayout({
     >
       <body>
         <TRPCReactProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <ClerkProvider
-              appearance={{
-                elements: {
-                  formButtonPrimary: "bg-primary-gradient",
-                  footerActionLink:
-                    "bg-primary-text-gradient hover:text-primary-500",
-                },
-              }}
-            >
+          <ThemeProvider>
+            <AuthProvider>
               {children}
               <Toaster />
-            </ClerkProvider>
+            </AuthProvider>
           </ThemeProvider>
         </TRPCReactProvider>
       </body>

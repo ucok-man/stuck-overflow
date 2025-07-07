@@ -31,8 +31,10 @@ export default function LeftSidebar() {
               }
               key={item.label}
               className={cn(
-                "text-dark-300_light-900 flex items-center justify-start gap-4 bg-transparent p-4",
-                isActive && "bg-primary-gradient text-light-900 rounded-lg",
+                "flex items-center justify-start gap-4 bg-transparent p-4",
+                isActive
+                  ? "bg-primary-gradient text-light-900 rounded-lg"
+                  : "text-dark-300_light-900",
               )}
             >
               <Image
@@ -40,7 +42,7 @@ export default function LeftSidebar() {
                 alt={item.label}
                 width={20}
                 height={20}
-                className={`${isActive && "invert-colors"}`}
+                className={`${isActive ? "" : "invert-colors"}`}
               />
               <p
                 className={`${isActive ? "font-base-bold" : "font-base-medium"} max-lg:hidden`}
