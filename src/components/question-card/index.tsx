@@ -36,6 +36,7 @@ export default async function QuestionCard({ question }: Props) {
           </Link>
         </div>
 
+        {/* TODO: add edit button & move to a component*/}
         <SignedIn>
           {showActionButtons && (
             <Link

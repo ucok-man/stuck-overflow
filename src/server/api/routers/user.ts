@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { BADGE_CRITERIA_ENUM } from "@/lib/constants/badge-criteria";
+import { calculateBadge } from "@/lib/utils";
 import type { Tag } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
@@ -86,6 +87,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         clerkId: z.string().trim(),
+        take: z.number().positive().default(5),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -126,6 +128,122 @@ export const userRouter = createTRPCRouter({
 
       taggroup.sort((a, b) => b.count - a.count);
 
-      return taggroup.slice(0, 3).map((item) => item.tag);
+      return taggroup.slice(0, input.take);
+    }),
+
+  getProfile: publicProcedure
+    .input(
+      z.object({
+        clerkId: z.string().trim(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          clerkId: input.clerkId,
+        },
+      });
+
+      if (!user)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `There is no user with clerk id #${input.clerkId}`,
+        });
+
+      // get total question created
+      const totalQuestionCreated = await ctx.db.question.count({
+        where: {
+          authorId: user.id,
+        },
+      });
+
+      // get total answer created
+      const totalAnswerCreated = await ctx.db.answer.count({
+        where: {
+          authorId: user.id,
+        },
+      });
+
+      // get total question upvotes
+      const qs = await ctx.db.question.findMany({
+        where: {
+          authorId: user.id,
+        },
+        include: {
+          _count: {
+            select: {
+              upvotes: true,
+            },
+          },
+        },
+      });
+
+      const totalQuestionUpvotes = qs.reduce((total, q) => {
+        return total + q._count.upvotes;
+      }, 0);
+
+      // get total answer upvotes
+      const ans = await ctx.db.answer.findMany({
+        where: {
+          authorId: user.id,
+        },
+        include: {
+          _count: {
+            select: {
+              upvotes: true,
+            },
+          },
+        },
+      });
+      const totalAnswerUpvotes = ans.reduce((acc, a) => {
+        return acc + a._count.upvotes;
+      }, 0);
+
+      // get total question views
+      const totalQuestionView = await ctx.db.question
+        .aggregate({
+          _sum: {
+            views: true,
+          },
+        })
+        .then((res) => res._sum.views ?? 0);
+
+      // calculate badge achievment
+      const badge = calculateBadge({
+        criterias: [
+          {
+            type: BADGE_CRITERIA_ENUM.TOTAL_ANSWER_CREATED,
+            count: totalAnswerCreated,
+          },
+          {
+            type: BADGE_CRITERIA_ENUM.TOTAL_ANSWER_UPVOTES,
+            count: totalAnswerUpvotes,
+          },
+          {
+            type: BADGE_CRITERIA_ENUM.TOTAL_QUESTION_CREATED,
+            count: totalQuestionCreated,
+          },
+          {
+            type: BADGE_CRITERIA_ENUM.TOTAL_QUESTION_UPVOTES,
+            count: totalQuestionUpvotes,
+          },
+          {
+            type: BADGE_CRITERIA_ENUM.TOTAL_QUESTION_VIEWS,
+            count: totalQuestionView,
+          },
+        ],
+      });
+
+      return {
+        user: user,
+        count: {
+          questionCreated: totalQuestionCreated,
+          questionUpvotes: totalQuestionUpvotes,
+          questionViews: totalQuestionView,
+          answerCreated: totalAnswerCreated,
+          answerUpvotes: totalAnswerUpvotes,
+        },
+        badge: badge,
+      };
     }),
 });

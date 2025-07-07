@@ -213,6 +213,78 @@ export const questionRouter = createTRPCRouter({
       })[];
     }),
 
+  getAllByClerkId: privatProcedure
+    .input(
+      z.object({
+        clerkId: z.string().trim(),
+        query: z.string().trim().nullable().optional(),
+        pageSize: z
+          .string()
+          .trim()
+          .refine((arg) => !isNaN(Number(arg)), { message: "Invalid number" }) // Ensure it's a valid number
+          .transform((arg) => Number(arg))
+          .pipe(z.number().min(1).max(100)) // Validate after transformation
+          .optional()
+          .default("10"),
+        page: z
+          .string()
+          .trim()
+          .refine((arg) => !isNaN(Number(arg)), { message: "Invalid number" }) // Ensure it's a valid number
+          .transform((arg) => Number(arg))
+          .pipe(z.number().min(1).max(1000)) // Validate after transformation
+          .optional()
+          .default("1"),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const term = input.query?.split(" ").join(" & ");
+
+      const params: NonNullable<
+        Parameters<typeof ctx.db.question.findMany>[0]
+      > = {
+        where: {
+          author: {
+            clerkId: input.clerkId,
+          },
+        },
+        include: {
+          author: true,
+          tags: true,
+          answers: true,
+          upvotes: true,
+          downvotes: true,
+        },
+        take: input.pageSize,
+        skip: (input.page - 1) * input.pageSize,
+      };
+
+      if (term) {
+        params.where!.OR = [
+          {
+            title: {
+              search: term,
+              mode: "insensitive",
+            },
+          },
+          {
+            content: {
+              search: term,
+              mode: "insensitive",
+            },
+          },
+        ];
+      }
+
+      const questions = await ctx.db.question.findMany(params);
+      return questions as (Question & {
+        author: User;
+        tags: Tag[];
+        answers: Answer[];
+        upvotes: User[];
+        downvotes: User[];
+      })[];
+    }),
+
   getCollection: privatProcedure
     .input(
       z.object({

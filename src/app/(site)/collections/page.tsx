@@ -2,12 +2,12 @@ import LocalFilter from "@/components/local-filter";
 import LocalMobileFilter from "@/components/local-mobile-filter";
 import LocalSearchBox from "@/components/local-search-box";
 import Pagination from "@/components/pagination";
+import QuestionCard from "@/components/question-card";
 import { COLLECTION_FILTERS } from "@/lib/constants/collection-filter";
 import type { CollectionFilterType } from "@/lib/types/collection-filter-type";
 import { api } from "@/trpc/server";
 import type { Metadata } from "next/types";
 import EmptyState from "./empty-state";
-import QuestionCard from "./question-card";
 
 export const metadata: Metadata = {
   title: "Collections | Stuck Overflow",

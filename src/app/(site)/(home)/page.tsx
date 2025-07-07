@@ -5,12 +5,12 @@ import LocalFilter from "@/components/local-filter";
 import LocalMobileFilter from "@/components/local-mobile-filter";
 import LocalSearchBox from "@/components/local-search-box";
 import Pagination from "@/components/pagination";
+import QuestionCard from "@/components/question-card";
 import { QUESTION_FILTERS } from "@/lib/constants/question-filter";
 import type { QuestionFilterType } from "@/lib/types/question-filter-type";
 import { api } from "@/trpc/server";
 import type { Metadata } from "next";
 import EmptyState from "./empty-state";
-import QuestionCard from "./question-card";
 
 export const metadata: Metadata = {
   title: "Home | Stuck Overflow",

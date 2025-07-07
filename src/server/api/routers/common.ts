@@ -1,5 +1,5 @@
 import type { GlobalFilterType } from "@/lib/types/global-filter-type";
-import { shuffle } from "@/server/utils";
+import { shuffle } from "@/lib/utils";
 import z from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 

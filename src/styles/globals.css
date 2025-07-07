@@ -13,6 +13,8 @@
 
   --font-space-grotesk: var(--font-spaceGrotesk);
 
+  --breakpoint-xs: 420px;
+
   --color-primary-100: #fff1e6;
   --color-primary-500: #ff7000;
   --color-dark-100: #000000;
