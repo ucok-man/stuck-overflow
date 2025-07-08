@@ -13,7 +13,7 @@ export default function LeftSidebar() {
   const pathname = usePathname();
 
   return (
-    <section className="bg-light-900_dark-200 border-light custom-scrollbar shadow-light-300 sticky top-0 left-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-36 max-sm:hidden lg:w-[266px] dark:shadow-none">
+    <section className="bg-light-900_dark-200 border-light custom-scrollbar shadow-light-300 sticky top-0 left-0 flex h-screen w-[px] shrink-0 flex-col justify-between overflow-y-auto border-r p-3 pt-36 max-sm:hidden lg:w-[266px] lg:p-6 dark:shadow-none">
       <div className="flex flex-1 flex-col gap-6">
         {SIDEBAR_LINKS.map((item) => {
           const isActive =
@@ -43,7 +43,7 @@ export default function LeftSidebar() {
                 alt={item.label}
                 width={20}
                 height={20}
-                className={`${isActive ? "" : "invert-colors"}`}
+                className={`shrink-0 ${isActive ? "" : "invert-colors"}`}
               />
               <p
                 className={`${isActive ? "font-base-bold" : "font-base-medium"} max-lg:hidden`}

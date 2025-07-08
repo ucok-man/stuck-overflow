@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./_variables.scss";
+@import "./_keyframe-animations.scss";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -499,3 +501,6 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Tiptap Override */
+/* . */
