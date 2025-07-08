@@ -40,7 +40,7 @@ export default async function HomePage(props: Props) {
         <h1 className="font-h1-bold text-dark-100_light-900">All Questions</h1>
 
         <Link href="/ask-question" className="flex justify-end max-sm:w-full">
-          <Button className="bg-primary-gradient !text-light-900 min-h-[46px] px-4 py-3">
+          <Button className="bg-primary-gradient !text-light-900 min-h-[46px] cursor-pointer px-4 py-3">
             Ask a Question
           </Button>
         </Link>

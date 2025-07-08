@@ -3,7 +3,7 @@ import { calculateBadge } from "@/lib/utils";
 import type { Tag } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, privatProcedure, publicProcedure } from "../trpc";
 // import type {Question} from "@prisma/client/runtime/library.js";
 
 export const userRouter = createTRPCRouter({
@@ -245,5 +245,53 @@ export const userRouter = createTRPCRouter({
         },
         badge: badge,
       };
+    }),
+
+  getByClerkId: privatProcedure
+    .input(z.object({ clerkId: z.string().trim() }))
+    .query(async ({ ctx }) => {
+      return ctx.user;
+    }),
+
+  edit: privatProcedure
+    .input(
+      z.object({
+        name: z.string().trim().min(5).max(50),
+        username: z.string().trim().min(5).max(50),
+        bio: z
+          .string()
+          .trim()
+          .transform((val) => (val === "" ? undefined : val))
+          .optional()
+          .pipe(z.string().min(10).max(200).optional()),
+
+        portfolioWebsite: z
+          .string()
+          .trim()
+          .transform((val) => (val === "" ? undefined : val))
+          .optional()
+          .pipe(z.string().url().optional()),
+
+        location: z
+          .string()
+          .trim()
+          .transform((val) => (val === "" ? undefined : val))
+          .optional()
+          .pipe(z.string().min(5).max(100).optional()),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.user.update({
+        where: {
+          id: ctx.user.id,
+        },
+        data: {
+          name: input.name,
+          username: input.username,
+          bio: input.bio ?? undefined,
+          portfolioWebsite: input.portfolioWebsite ?? undefined,
+          location: input.location ?? undefined,
+        },
+      });
     }),
 });

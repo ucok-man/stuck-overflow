@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-
 import LocalFilter from "@/components/local-filter";
 import LocalMobileFilter from "@/components/local-mobile-filter";
 import LocalSearchBox from "@/components/local-search-box";
@@ -36,15 +33,7 @@ export default async function TagsPage(props: Props) {
 
   return (
     <div>
-      <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
-        <h1 className="font-h1-bold text-dark-100_light-900">All Questions</h1>
-
-        <Link href="/ask-question" className="flex justify-end max-sm:w-full">
-          <Button className="bg-primary-gradient !text-light-900 min-h-[46px] px-4 py-3">
-            Ask a Question
-          </Button>
-        </Link>
-      </div>
+      <h1 className="font-h1-bold text-dark-100_light-900">All Tags</h1>
 
       <div className="mt-11 flex w-full flex-col items-start justify-between gap-5">
         <LocalSearchBox

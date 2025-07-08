@@ -30,9 +30,12 @@ export default function DeleteAction({ answerId }: Props) {
                 queryClient.refetchQueries({
                   type: "active",
                 });
+                toast.success("Success deleting answer.");
               },
               onError: () => {
-                toast("Failed to delete answer.");
+                toast.error(
+                  "Sorry we have problem in our server. Please try again later!",
+                );
               },
             },
           );

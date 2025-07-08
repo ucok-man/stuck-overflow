@@ -4,9 +4,6 @@ import { SignedIn } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 
-// import AnswersTab from "@/components/shared/AnswersTab";
-// import QuestionTab from "@/components/shared/QuestionTab";
-// import Stats from "@/components/shared/Stats";
 import RenderTag from "@/components/render-tag";
 import { api } from "@/trpc/server";
 import { format } from "date-fns";
@@ -32,9 +29,10 @@ export default async function ViewProfilePage(props: Props) {
   });
 
   return (
-    <>
+    <div>
       <div className="flex flex-col-reverse items-start justify-between sm:flex-row">
-        <div className="flex flex-col items-start gap-4 lg:flex-row">
+        {/* Headers */}
+        <section className="flex flex-col items-start gap-4 lg:flex-row">
           <Image
             src={profile.user.picture}
             alt="profile picture"
@@ -103,21 +101,23 @@ export default async function ViewProfilePage(props: Props) {
               </p>
             )}
           </div>
-        </div>
+        </section>
 
-        <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
+        {/* Edit Profile Button */}
+        <section className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
           <SignedIn>
             {params.clerkId === profile.user.clerkId && (
               <Link href="/profile/edit">
-                <Button className="font-paragraph-medium btn-secondary! text-dark-300_light-900 min-h-[46px] min-w-[175px] px-4 py-3">
+                <Button className="font-paragraph-medium btn-secondary! text-dark-300_light-900 min-h-[46px] min-w-[175px] cursor-pointer px-4 py-3">
                   Edit Profile
                 </Button>
               </Link>
             )}
           </SignedIn>
-        </div>
+        </section>
       </div>
 
+      {/* Stats And Badge */}
       <ProfileStats
         reputation={profile.user.reputation}
         totalQuestions={profile.count.questionCreated}
@@ -126,12 +126,13 @@ export default async function ViewProfilePage(props: Props) {
       />
 
       <div className="mt-10 flex gap-10 max-md:flex-col-reverse">
+        {/* Tabs */}
         <Tabs defaultValue="top-posts" className="flex-1">
           <TabsList className="bg-light-800_dark-400 min-h-[42px] p-1">
-            <TabsTrigger value="top-posts" className="tab!">
+            <TabsTrigger value="top-posts" className="tab! cursor-pointer">
               Top Posts
             </TabsTrigger>
-            <TabsTrigger value="answers" className="tab!">
+            <TabsTrigger value="answers" className="tab! cursor-pointer">
               Answers
             </TabsTrigger>
           </TabsList>
@@ -156,7 +157,8 @@ export default async function ViewProfilePage(props: Props) {
           </TabsContent>
         </Tabs>
 
-        <div>
+        {/* Top Tags */}
+        <section>
           <h3 className="font-h3-bold text-dark-200_light-900">Top Tags</h3>
           <div className="mt-7 flex flex-col gap-4">
             {toptags.map(({ tag, count }) => (
@@ -169,8 +171,8 @@ export default async function ViewProfilePage(props: Props) {
               />
             ))}
           </div>
-        </div>
+        </section>
       </div>
-    </>
+    </div>
   );
 }

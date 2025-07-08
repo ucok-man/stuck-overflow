@@ -1,8 +1,6 @@
 import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 
-// interface StatsCardProps
-
 type Props = {
   totalQuestions: number;
   totalAnswers: number;
@@ -16,7 +14,7 @@ type Props = {
 
 export default function ProfileStats(props: Props) {
   return (
-    <div className="mt-10">
+    <section className="mt-10">
       <h4 className="font-h3-semibold text-dark-200_light-900">
         Reputation - {props.reputation}
       </h4>
@@ -57,7 +55,7 @@ export default function ProfileStats(props: Props) {
           title="Bronze Badges"
         />
       </div>
-    </div>
+    </section>
   );
 }
 
