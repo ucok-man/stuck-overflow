@@ -75,9 +75,7 @@ export default function EditForm({ user }: Props) {
         toast.success("Success updating profile.");
       },
       onError: () => {
-        toast.error(
-          "Sorry we have problem in our server. Please try again later!",
-        );
+        toast.error("Failed to execute action. Please try again later!");
       },
     });
   };

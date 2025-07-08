@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import type { Answer, Question, Tag, User } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { createTRPCRouter, privatProcedure, publicProcedure } from "../trpc";
 
@@ -401,5 +402,33 @@ export const questionRouter = createTRPCRouter({
         upvotes: User[];
         downvotes: User[];
       })[];
+    }),
+
+  delete: privatProcedure
+    .input(
+      z.object({
+        questionId: z.string().trim(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const question = await ctx.db.question.findUnique({
+        where: {
+          id: input.questionId,
+          authorId: ctx.user.id,
+        },
+      });
+
+      if (!question) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No question record found`,
+        });
+      }
+
+      return await ctx.db.question.delete({
+        where: {
+          id: question.id,
+        },
+      });
     }),
 });

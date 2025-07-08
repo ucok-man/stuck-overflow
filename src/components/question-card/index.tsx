@@ -1,12 +1,12 @@
 import Metric from "@/components/metric";
 import RenderTag from "@/components/render-tag";
 import { formatAndDivideNumber } from "@/lib/utils";
-import { SignedIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import type { Answer, Question, Tag, User } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
-import Image from "next/image";
 import Link from "next/link";
+import EditButton from "./edit-button";
+import RemoveButton from "./remove-button";
 
 type Props = {
   question: Question & {
@@ -20,7 +20,7 @@ type Props = {
 
 export default async function QuestionCard({ question }: Props) {
   const { userId: clerkId } = await auth();
-  const showActionButtons = clerkId && clerkId === question.author.clerkId;
+  const isAuthor = clerkId && clerkId === question.author.clerkId;
 
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
@@ -36,23 +36,12 @@ export default async function QuestionCard({ question }: Props) {
           </Link>
         </div>
 
-        {/* TODO: add edit button & move to a component*/}
-        <SignedIn>
-          {showActionButtons && (
-            <Link
-              className="cursor-pointer"
-              href={`/question/edit/${question.id}`}
-            >
-              <Image
-                src="/assets/icons/edit.svg"
-                alt="Edit"
-                width={14}
-                height={14}
-                className="object-contain"
-              />
-            </Link>
-          )}
-        </SignedIn>
+        {isAuthor && (
+          <div className="flex items-center justify-end gap-3 max-sm:w-full">
+            <EditButton questionId={question.id} />
+            <RemoveButton questionId={question.id} />
+          </div>
+        )}
       </div>
 
       <div className="mt-3.5 flex flex-wrap gap-2">
