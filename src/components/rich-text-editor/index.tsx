@@ -61,10 +61,12 @@ import { useMobile } from "@/hooks/use-mobile";
 // --- Components ---
 
 // --- Lib ---
-import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
+import { MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 
 // --- Styles ---
 import "@/components/rich-text-editor/index.scss";
+import { useUploadThing } from "@/lib/uploadthing-utils";
+import { toast } from "sonner";
 
 // import content from "@/components/rich-text-editor/data/content.json";
 
@@ -147,10 +149,29 @@ const MobileToolbarContent = ({ onBack }: { onBack: () => void }) => (
   </>
 );
 
-export default function RichTextEditor() {
+type Props = {
+  onBlur?: (value: string) => void;
+  onChange?: (value: string) => void;
+  initialValue: string;
+};
+export default function RichTextEditor(props: Props) {
   const isMobile = useMobile({ breakpoint: 968 });
   const [mobileView, setMobileView] = React.useState<"main" | "link">("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
+
+  const onProgressRef = React.useRef<
+    ((event: { progress: number }) => void) | null
+  >(null);
+  const { startUpload } = useUploadThing("imageUploader", {
+    onUploadError: () => {
+      toast.error("Failed to upload image. Please try again later!");
+    },
+    onUploadProgress: (progress) => {
+      if (onProgressRef.current) {
+        onProgressRef.current({ progress });
+      }
+    },
+  });
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -178,14 +199,39 @@ export default function RichTextEditor() {
       ImageUploadNode.configure({
         accept: "image/*",
         maxSize: MAX_FILE_SIZE,
-        limit: 3,
-        upload: handleImageUpload,
+        limit: 1,
+        upload: async (file, onProgress) => {
+          // Store the onProgress callback in the ref
+          if (onProgress) {
+            onProgressRef.current = onProgress;
+          }
+
+          const result = await startUpload([file]);
+
+          // Clean up the ref after upload is complete
+          onProgressRef.current = null;
+
+          if (!result?.length || !result[0]?.ufsUrl) {
+            throw new Error("No url returned from the upload!");
+          }
+          return result[0].ufsUrl;
+        },
         onError: (error) => console.error("Upload failed:", error),
       }),
       TrailingNode,
       Link.configure({ openOnClick: false }),
     ],
-    // content: content,
+    onBlur: ({ editor }) => {
+      if (props.onBlur) {
+        props.onBlur(editor.getHTML());
+      }
+    },
+    onUpdate: ({ editor }) => {
+      if (props.onChange) {
+        props.onChange(editor.getHTML());
+      }
+    },
+    content: props.initialValue,
   });
 
   React.useEffect(() => {

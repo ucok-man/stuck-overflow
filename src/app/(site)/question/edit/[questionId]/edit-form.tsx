@@ -19,6 +19,7 @@ import z from "zod";
 import { Button } from "@/components/ui/button";
 import { InputTags } from "@/components/ui/input-tags";
 import { api } from "@/trpc/react";
+import type { Question, Tag } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -31,30 +32,37 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export default function CreateForm() {
+type Props = {
+  question: Question & { tags: Tag[] };
+};
+
+export default function EditForm({ question }: Props) {
   const router = useRouter();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      tags: [],
+      title: question.title,
+      content: question.content,
+      tags: question.tags.map((tag) => tag.name),
     },
   });
 
   const queryclient = useQueryClient();
-  const createQuestion = api.question.create.useMutation();
+  const updateQuestion = api.question.update.useMutation();
 
   const onSubmit = (data: FormData) => {
-    createQuestion.mutate(data, {
-      onSuccess: (question) => {
-        toast.success("Success creating question.");
-        queryclient.refetchQueries({
-          type: "active",
-        });
-        router.push(`/question/${question.id}`);
+    updateQuestion.mutate(
+      { ...data, questionId: question.id },
+      {
+        onSuccess: (question) => {
+          toast.success("Success updating question.");
+          queryclient.refetchQueries({
+            type: "active",
+          });
+          router.push(`/question/${question.id}`);
+        },
       },
-    });
+    );
   };
 
   return (
@@ -98,7 +106,7 @@ export default function CreateForm() {
                 {/* Wrap on div to style it */}
                 <div className="has-[:focus-visible]:border-primary-500 border-light-2 relative mt-3.5 overflow-hidden rounded-md border">
                   <RichTextEditor
-                    initialValue=""
+                    initialValue={form.getValues("content")}
                     onChange={(html) => {
                       field.onChange(html);
                     }}
@@ -142,9 +150,9 @@ export default function CreateForm() {
         <Button
           type="submit"
           className="bg-primary-gradient !text-light-900 w-fit cursor-pointer"
-          disabled={createQuestion.isPending}
+          disabled={updateQuestion.isPending}
         >
-          {createQuestion.isPending ? "Posting..." : "Ask a Question"}
+          {updateQuestion.isPending ? "Editing..." : "Edit Question"}
         </Button>
       </form>
     </Form>

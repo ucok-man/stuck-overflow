@@ -30,7 +30,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 
   return {
     db,
-    user,
+    clerkUser: user,
     ...opts,
   };
 };
@@ -105,7 +105,7 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  */
 
 const isAuthenticated = t.middleware(async ({ next, ctx }) => {
-  if (!ctx.user) {
+  if (!ctx.clerkUser) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "You must be logged in to access this resource",
@@ -114,7 +114,7 @@ const isAuthenticated = t.middleware(async ({ next, ctx }) => {
 
   const user = await ctx.db.user.findUnique({
     where: {
-      clerkId: ctx.user.id,
+      clerkId: ctx.clerkUser.id,
     },
   });
 

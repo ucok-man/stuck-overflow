@@ -70,24 +70,28 @@ export const answerRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const answer = await ctx.db.answer.findUnique({
-        where: {
-          id: input.answerId,
-          authorId: ctx.user.id,
-        },
-      });
-
-      if (!answer) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `No answer record found`,
+      return await ctx.db.$transaction(async (tx) => {
+        const answer = await tx.answer.findUnique({
+          where: {
+            id: input.answerId,
+            authorId: ctx.user.id,
+          },
         });
-      }
 
-      return await ctx.db.answer.delete({
-        where: {
-          id: answer.id,
-        },
+        if (!answer) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `No answer record found`,
+          });
+        }
+
+        // Remove interactions record associated with answer. (done implicitly)
+
+        return await tx.answer.delete({
+          where: {
+            id: answer.id,
+          },
+        });
       });
     }),
 });

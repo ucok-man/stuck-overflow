@@ -404,6 +404,34 @@ export const questionRouter = createTRPCRouter({
       })[];
     }),
 
+  getByIdStrict: privatProcedure
+    .input(
+      z.object({
+        questionId: z.string().trim(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const question = await ctx.db.question.findUnique({
+        where: {
+          id: input.questionId,
+          authorId: ctx.user.id,
+        },
+        include: {
+          author: true,
+          tags: true,
+        },
+      });
+
+      if (!question) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No question record found`,
+        });
+      }
+
+      return question;
+    }),
+
   delete: privatProcedure
     .input(
       z.object({
@@ -425,10 +453,147 @@ export const questionRouter = createTRPCRouter({
         });
       }
 
+      // Remove interactions record (this is implicitly handled by prisma `onDelete cascade`)
+      // Remove the answer acociated with question (this is also deleted implicitly)
+      // Remove conjuction table on question_tags (this also implicit deleted)
+
       return await ctx.db.question.delete({
         where: {
           id: question.id,
         },
+      });
+    }),
+
+  create: privatProcedure
+    .input(
+      z.object({
+        title: z.string().min(5).max(150),
+        content: z.string().min(100),
+        tags: z.array(z.string().min(1).max(20)).nonempty().max(3),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.$transaction(async (tx) => {
+        const question = await tx.question.create({
+          data: {
+            title: input.title,
+            content: input.content,
+            tags: {
+              connectOrCreate: [
+                ...input.tags.map((tagname) => ({
+                  create: {
+                    name: tagname,
+                  },
+                  where: {
+                    name: tagname,
+                  },
+                })),
+              ],
+            },
+            authorId: ctx.user.id,
+          },
+        });
+
+        // Create an interaction record for the user's ask_question action
+        await tx.interaction.create({
+          data: {
+            userId: ctx.user.id,
+            action: "ask_question",
+            questionId: question.id,
+            tags: {
+              connect: [
+                ...input.tags.map((tagname) => ({
+                  name: tagname,
+                })),
+              ],
+            },
+          },
+        });
+
+        // Increment author's reputation by +5 for creating a question
+        await tx.user.update({
+          where: {
+            id: ctx.user.id,
+          },
+          data: {
+            reputation: {
+              increment: 1,
+            },
+          },
+        });
+
+        return question;
+      });
+    }),
+
+  update: privatProcedure
+    .input(
+      z.object({
+        questionId: z.string().trim(),
+        title: z.string().min(5).max(150),
+        content: z.string().min(100),
+        tags: z.array(z.string().min(1).max(20)).nonempty().max(3),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.$transaction(async (tx) => {
+        const question = await tx.question.findUnique({
+          where: {
+            id: input.questionId,
+          },
+        });
+        if (!question) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `No question record found`,
+          });
+        }
+
+        await tx.question.update({
+          data: {
+            title: input.title,
+            content: input.content,
+            tags: {
+              set: [], // remove all existing tag connections
+              connectOrCreate: [
+                ...input.tags.map((tagname) => ({
+                  create: {
+                    name: tagname,
+                  },
+                  where: {
+                    name: tagname,
+                  },
+                })),
+              ],
+            },
+            authorId: ctx.user.id,
+          },
+          where: {
+            id: question.id,
+          },
+        });
+
+        // update interactions record
+        await tx.interaction.update({
+          data: {
+            tags: {
+              set: [], // remove all existing tag connections
+              connect: [
+                ...input.tags.map((tagname) => ({
+                  name: tagname,
+                })),
+              ],
+            },
+          },
+          where: {
+            userId_questionId: {
+              userId: ctx.user.id,
+              questionId: question.id,
+            },
+          },
+        });
+
+        return question;
       });
     }),
 });

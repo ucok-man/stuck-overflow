@@ -16,7 +16,7 @@ export default async function SyncUserPage() {
   // This prevents running the upsert logic unnecessarily if the page is reloaded.
   const existingUser = await db.user.findUnique({
     where: {
-      id: user.id,
+      clerkId: user.id,
     },
   });
 

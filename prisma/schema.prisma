@@ -73,10 +73,9 @@ model Answer {
 }
 
 model Tag {
-    id          String   @id @default(cuid())
-    name        String   @unique
-    description String
-    createdOn   DateTime @default(now())
+    id        String   @id @default(cuid())
+    name      String   @unique
+    createdOn DateTime @default(now())
 
     questions Question[] @relation("questionTag")
     followers User[]     @relation("tagFollowed")
@@ -95,83 +94,11 @@ model Interaction {
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     questionId String?
-    question   Question? @relation(fields: [questionId], references: [id])
+    question   Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
     answerId String?
-    answer   Answer? @relation(fields: [answerId], references: [id])
+    answer   Answer? @relation(fields: [answerId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, questionId])
+    @@unique([userId, answerId])
 }
-
-// --- EXPLICIT JOIN TABLES for Many-to-Many Relationships ---
-
-// model SavedQuestion {
-//     userId     String
-//     user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-//     questionId String
-//     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-//     @@id([userId, questionId])
-// }
-
-// model QuestionUpvote {
-//     userId     String
-//     user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-//     questionId String
-//     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-//     @@id([userId, questionId])
-// }
-
-// model QuestionDownvote {
-//     userId     String
-//     user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-//     questionId String
-//     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-//     @@id([userId, questionId])
-// }
-
-// model AnswerUpvote {
-//     userId   String
-//     user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-//     answerId String
-//     answer   Answer @relation(fields: [answerId], references: [id], onDelete: Cascade)
-
-//     @@id([userId, answerId])
-// }
-
-// model AnswerDownvote {
-//     userId   String
-//     user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-//     answerId String
-//     answer   Answer @relation(fields: [answerId], references: [id], onDelete: Cascade)
-
-//     @@id([userId, answerId])
-// }
-
-// model QuestionTag {
-//     questionId String
-//     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-//     tagId      String
-//     tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-//     @@id([questionId, tagId])
-// }
-
-// model TagFollower {
-//     userId String
-//     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-//     tagId  String
-//     tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-//     @@id([userId, tagId])
-// }
-
-// model InteractionTag {
-//     interactionId String
-//     interaction   Interaction @relation(fields: [interactionId], references: [id], onDelete: Cascade)
-
-//     tagId String
-//     tag   Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-//     @@id([interactionId, tagId])
-// }

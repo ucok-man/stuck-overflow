@@ -54,12 +54,6 @@ export const tagRouter = createTRPCRouter({
               mode: "insensitive",
             },
           },
-          {
-            description: {
-              search: term,
-              mode: "insensitive",
-            },
-          },
         ];
       }
       if (input.filter === "newest") {
