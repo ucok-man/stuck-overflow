@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 "use client";
 
 import { Input } from "@/components/ui/input";
 import { pushUrlQuery, removeUrlQuery } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type RefObject } from "react";
@@ -14,10 +16,12 @@ export default function GlobalSearch() {
   const searchParams = useSearchParams();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const query = searchParams.get("search"); // default to `query` -> from local search
+  const query = searchParams.get("search");
   const [search, setSearch] = useState(query ?? "");
   const [isOpen, setIsOpen] = useState(false);
   const [debouncedSearch] = useDebounceValue(search, 300);
+
+  const queryClient = useQueryClient();
 
   useOnClickOutside(containerRef as RefObject<HTMLDivElement>, () => {
     setIsOpen(false);
@@ -26,17 +30,20 @@ export default function GlobalSearch() {
 
   useEffect(() => {
     if (debouncedSearch) {
-      const newUrl = pushUrlQuery({
+      queryClient.refetchQueries({
+        type: "active",
+      });
+      const url = pushUrlQuery({
         searchParams: searchParams.toString(),
         items: [{ key: "search", value: debouncedSearch }],
       });
-      router.push(newUrl, { scroll: false });
+      router.push(url, { scroll: false });
     } else {
-      const newUrl = removeUrlQuery({
+      const url = removeUrlQuery({
         searchParams: searchParams.toString(),
         keysToRemove: ["search", "type"],
       });
-      router.push(newUrl, { scroll: false });
+      router.push(url, { scroll: false });
     }
   }, [debouncedSearch]);
 

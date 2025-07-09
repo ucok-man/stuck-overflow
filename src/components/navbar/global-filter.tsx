@@ -1,14 +1,17 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 "use client";
 
 import { GLOBAL_FILTERS } from "@/lib/constants/global-filter";
 import { pushUrlQuery } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function GlobalFilter() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
 
+  const searchParams = useSearchParams();
   const typeParams = searchParams.get("type");
 
   const [active, setActive] = useState(typeParams ?? "");
@@ -45,6 +48,9 @@ export default function GlobalFilter() {
 
       router.push(url, { scroll: false });
     }
+    queryClient.refetchQueries({
+      type: "active",
+    });
   };
 
   return (

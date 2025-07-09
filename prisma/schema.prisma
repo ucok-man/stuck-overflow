@@ -68,8 +68,6 @@ model Answer {
 
     upvotes   User[] @relation("answerUpvoted")
     downvotes User[] @relation("answerDownvoted")
-
-    interactions Interaction[]
 }
 
 model Tag {
@@ -84,9 +82,9 @@ model Tag {
 }
 
 model Interaction {
-    id        String   @id @default(cuid())
-    action    String
-    createdAt DateTime @default(now())
+    id        String              @id @default(cuid())
+    actions   InteractionAction[]
+    createdAt DateTime            @default(now())
 
     tags Tag[]
 
@@ -96,9 +94,11 @@ model Interaction {
     questionId String?
     question   Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-    answerId String?
-    answer   Answer? @relation(fields: [answerId], references: [id], onDelete: Cascade)
-
     @@unique([userId, questionId])
-    @@unique([userId, answerId])
+}
+
+enum InteractionAction {
+    ASK_QUESTION
+    ANSWER
+    SAVE_QUESTION
 }

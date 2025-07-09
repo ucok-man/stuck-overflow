@@ -1,5 +1,10 @@
 import { auth } from "@clerk/nextjs/server";
-import type { Answer, Question, Tag, User } from "@prisma/client";
+import {
+  type Answer,
+  type Question,
+  type Tag,
+  type User,
+} from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { createTRPCRouter, privatProcedure, publicProcedure } from "../trpc";
@@ -404,6 +409,35 @@ export const questionRouter = createTRPCRouter({
       })[];
     }),
 
+  getById: publicProcedure
+    .input(z.object({ questionId: z.string().trim() }))
+    .query(async ({ ctx, input }) => {
+      const question = await ctx.db.question.findUnique({
+        where: {
+          id: input.questionId,
+        },
+        include: {
+          author: true,
+          tags: true,
+          answers: true,
+          upvotes: true,
+          downvotes: true,
+          savedBy: true,
+        },
+      });
+
+      if (!question) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No question record found`,
+        });
+      }
+
+      console.log({ question });
+
+      return question;
+    }),
+
   getByIdStrict: privatProcedure
     .input(
       z.object({
@@ -419,6 +453,10 @@ export const questionRouter = createTRPCRouter({
         include: {
           author: true,
           tags: true,
+          answers: true,
+          upvotes: true,
+          downvotes: true,
+          savedBy: true,
         },
       });
 
@@ -455,12 +493,25 @@ export const questionRouter = createTRPCRouter({
 
       // Remove interactions record (this is implicitly handled by prisma `onDelete cascade`)
       // Remove the answer acociated with question (this is also deleted implicitly)
-      // Remove conjuction table on question_tags (this also implicit deleted)
+      // Remove connection between `tags` and `question` (this also implicit deleted)
 
-      return await ctx.db.question.delete({
-        where: {
-          id: question.id,
-        },
+      /* -------------------- revert back reputation -------------------- */
+      return await ctx.db.$transaction(async (tx) => {
+        await tx.user.update({
+          where: {
+            id: question.authorId,
+          },
+          data: {
+            reputation: {
+              decrement: 5,
+            },
+          },
+        });
+        return await tx.question.delete({
+          where: {
+            id: question.id,
+          },
+        });
       });
     }),
 
@@ -498,7 +549,9 @@ export const questionRouter = createTRPCRouter({
         await tx.interaction.create({
           data: {
             userId: ctx.user.id,
-            action: "ask_question",
+            actions: {
+              set: ["ASK_QUESTION"],
+            },
             questionId: question.id,
             tags: {
               connect: [
@@ -517,7 +570,7 @@ export const questionRouter = createTRPCRouter({
           },
           data: {
             reputation: {
-              increment: 1,
+              increment: 5,
             },
           },
         });
@@ -573,7 +626,7 @@ export const questionRouter = createTRPCRouter({
           },
         });
 
-        // update interactions record
+        // update tags on interaction record
         await tx.interaction.update({
           data: {
             tags: {
@@ -594,6 +647,316 @@ export const questionRouter = createTRPCRouter({
         });
 
         return question;
+      });
+    }),
+
+  incrementView: publicProcedure
+    .input(
+      z.object({
+        questionId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.question.update({
+        where: {
+          id: input.questionId,
+        },
+        data: {
+          views: {
+            increment: 1,
+          },
+        },
+      });
+    }),
+
+  toggleUpvote: privatProcedure
+    .input(
+      z.object({
+        questionId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.$transaction(async (tx) => {
+        const question = await tx.question.findUnique({
+          where: {
+            id: input.questionId,
+          },
+          include: {
+            upvotes: {
+              where: {
+                id: ctx.user.id,
+              },
+            },
+          },
+        });
+        if (!question) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `No question record found`,
+          });
+        }
+
+        const isUpvoted = question?.upvotes.length > 0;
+
+        if (isUpvoted) {
+          /* ------------------------- Remove upvote ------------------------ */
+          await tx.question.update({
+            where: { id: question.id },
+            data: {
+              upvotes: {
+                disconnect: { id: ctx.user.id },
+              },
+            },
+          });
+
+          /* ---------------- revert current user reputation ---------------- */
+          await tx.user.update({
+            where: {
+              id: ctx.user.id,
+            },
+            data: {
+              reputation: {
+                decrement: 1,
+              },
+            },
+          });
+
+          /* ------------------- revert author reputation ------------------- */
+          await tx.user.update({
+            where: {
+              id: question.authorId,
+            },
+            data: {
+              reputation: {
+                decrement: 10,
+              },
+            },
+          });
+
+          return;
+        }
+
+        /* -------------------------- add upvote -------------------------- */
+        await tx.question.update({
+          where: { id: question.id },
+          data: {
+            upvotes: {
+              connect: { id: ctx.user.id },
+            },
+          },
+        });
+
+        /* ---------------- add current user reputation ---------------- */
+        await tx.user.update({
+          where: {
+            id: ctx.user.id,
+          },
+          data: {
+            reputation: {
+              increment: 1,
+            },
+          },
+        });
+
+        /* ------------------- add author reputation ------------------- */
+        await tx.user.update({
+          where: {
+            id: question.authorId,
+          },
+          data: {
+            reputation: {
+              increment: 10,
+            },
+          },
+        });
+      });
+    }),
+
+  toggleDownvote: privatProcedure
+    .input(
+      z.object({
+        questionId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.$transaction(async (tx) => {
+        const question = await tx.question.findUnique({
+          where: {
+            id: input.questionId,
+          },
+          include: {
+            downvotes: {
+              where: {
+                id: ctx.user.id,
+              },
+            },
+          },
+        });
+        if (!question) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `No question record found`,
+          });
+        }
+
+        const isDownvoted = question?.downvotes.length > 0;
+
+        console.log({ isDownvoted });
+
+        if (isDownvoted) {
+          /* ------------------------ Remove downvote ------------------------ */
+          await tx.question.update({
+            where: { id: question.id },
+            data: {
+              downvotes: {
+                disconnect: { id: ctx.user.id },
+              },
+            },
+          });
+
+          /* ---------------- revert current user reputation ---------------- */
+          await tx.user.update({
+            where: {
+              id: ctx.user.id,
+            },
+            data: {
+              reputation: {
+                decrement: 1, // user upvote/downvote will have +1 reputation
+              },
+            },
+          });
+
+          return;
+        }
+
+        /* -------------------------- add downvote -------------------------- */
+        await tx.question.update({
+          where: { id: question.id },
+          data: {
+            downvotes: {
+              connect: { id: ctx.user.id },
+            },
+          },
+        });
+
+        /* ---------------- add current user reputation ---------------- */
+        await tx.user.update({
+          where: {
+            id: ctx.user.id,
+          },
+          data: {
+            reputation: {
+              increment: 1,
+            },
+          },
+        });
+      });
+    }),
+
+  toggleSaveToCollection: privatProcedure
+    .input(
+      z.object({
+        questionId: z.string().trim(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.$transaction(async (tx) => {
+        const question = await tx.question.findUnique({
+          where: {
+            id: input.questionId,
+          },
+          include: {
+            savedBy: {
+              where: {
+                id: ctx.user.id,
+              },
+            },
+            tags: true,
+          },
+        });
+        if (!question) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: `No question record found`,
+          });
+        }
+
+        const isAlreadySaved = question?.savedBy.length > 0;
+
+        if (isAlreadySaved) {
+          await tx.question.update({
+            where: { id: question.id },
+            data: {
+              savedBy: {
+                disconnect: { id: ctx.user.id },
+              },
+            },
+          });
+
+          await tx.interaction.upsert({
+            where: {
+              userId_questionId: {
+                userId: ctx.user.id,
+                questionId: question.id,
+              },
+            },
+            create: {
+              actions: {
+                set: ["SAVE_QUESTION"],
+              },
+              questionId: question.id,
+              userId: ctx.user.id,
+              tags: {
+                connect: question.tags,
+              },
+            },
+            update: {
+              actions: {
+                push: "SAVE_QUESTION",
+              },
+            },
+          });
+          return;
+        }
+
+        await tx.question.update({
+          where: { id: question.id },
+          data: {
+            savedBy: {
+              connect: { id: ctx.user.id },
+            },
+          },
+        });
+
+        const interaction = await tx.interaction.findFirst({
+          where: {
+            actions: {
+              has: "SAVE_QUESTION",
+            },
+            questionId: question.id,
+            userId: ctx.user.id,
+          },
+        });
+
+        if (interaction && interaction.actions.length > 1) {
+          const actions = interaction.actions.filter(
+            (r) => r !== "SAVE_QUESTION",
+          );
+          await tx.interaction.update({
+            where: {
+              id: interaction.id,
+            },
+            data: {
+              actions: actions,
+            },
+          });
+        } else if (interaction && interaction.actions.length === 1) {
+          await tx.interaction.delete({
+            where: {
+              id: interaction.id,
+            },
+          });
+        }
       });
     }),
 });

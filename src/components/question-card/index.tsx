@@ -56,7 +56,7 @@ export default async function QuestionCard({ question }: Props) {
           alt="user"
           value={question.author.name}
           title={` - asked ${formatDistanceToNowStrict(question.createdAt)}`}
-          href={`/profile/${question.author.id}`}
+          href={`/profile/${question.author.clerkId}`}
           isAuthor
           textClass="font-body-medium text-dark-400_light-700"
         />

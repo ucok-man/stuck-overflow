@@ -21,6 +21,7 @@ import { InputTags } from "@/components/ui/input-tags";
 import { api } from "@/trpc/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { toast } from "sonner";
 
 const formSchema = z.object({
@@ -32,6 +33,7 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function CreateForm() {
+  const [isRedirecting, startTransition] = useTransition();
   const router = useRouter();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -52,7 +54,13 @@ export default function CreateForm() {
         queryclient.refetchQueries({
           type: "active",
         });
-        router.push(`/question/${question.id}`);
+        form.reset();
+        startTransition(() => {
+          router.push(`/question/${question.id}`);
+        });
+      },
+      onError: () => {
+        toast.error("Failed to posing question. Please try again shortly!");
       },
     });
   };
@@ -142,9 +150,13 @@ export default function CreateForm() {
         <Button
           type="submit"
           className="bg-primary-gradient !text-light-900 w-fit cursor-pointer"
-          disabled={createQuestion.isPending}
+          disabled={createQuestion.isPending || isRedirecting}
         >
-          {createQuestion.isPending ? "Posting..." : "Ask a Question"}
+          {createQuestion.isPending
+            ? "Posting..."
+            : isRedirecting
+              ? "Redirecting..."
+              : "Ask a Question"}
         </Button>
       </form>
     </Form>

@@ -15,7 +15,7 @@ export default async function UserCard({ user }: Props) {
   return (
     <Link
       href={`/profile/${user.clerkId}`}
-      className="shadow-light-100_dark-none max-xs:min-w-full xs:w-[260px] w-full"
+      className="shadow-light-100_dark-none max-xs:min-w-full w-full"
     >
       <article className="bg-light-900_dark-200 border-light flex w-full flex-col items-center justify-center rounded-2xl border p-8">
         <Image

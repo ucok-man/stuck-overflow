@@ -33,7 +33,7 @@ export default async function QuestionsByTagPage(props: Props) {
 
   return (
     <div>
-      <h1 className="font-h1-bold text-dark-100_light-900">{tag.name}</h1>
+      <h1 className="font-h1-bold text-dark-100_light-900">#{tag.name}</h1>
 
       <div className="mt-11 flex w-full flex-col items-start justify-between gap-5">
         <LocalSearchBox

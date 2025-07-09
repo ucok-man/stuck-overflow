@@ -8,7 +8,7 @@ type Props = {
 
 export default function SiteLayout({ children }: Props) {
   return (
-    <main className="bg-light-850_dark-100 relative">
+    <main className="bg-light-850 dark:bg-dark-100 relative">
       <Navbar />
       <div className="flex">
         <LeftSidebar />

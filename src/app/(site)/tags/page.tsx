@@ -4,6 +4,7 @@ import LocalSearchBox from "@/components/local-search-box";
 import Pagination from "@/components/pagination";
 import { TAG_FILTERS } from "@/lib/constants/tag-filter";
 import type { TagFilterType } from "@/lib/types/tag-filter-type";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/server";
 import type { Metadata } from "next";
 import EmptyState from "./empty-state";
@@ -29,6 +30,7 @@ export default async function TagsPage(props: Props) {
     filter: TAG_FILTERS.find((val) => val.value === searchParams.filter)
       ?.value as TagFilterType | undefined,
     page: searchParams.page,
+    pageSize: "9",
   });
 
   return (
@@ -49,7 +51,14 @@ export default async function TagsPage(props: Props) {
         <LocalFilter filters={TAG_FILTERS} containerClass="hidden md:flex" />
       </div>
 
-      <div className="mt-10 flex w-full flex-col gap-6">
+      <div
+        className={cn(
+          "mt-10 w-full",
+          tags.length
+            ? "grid grid-cols-1 gap-4 min-[520]:grid-cols-2! min-[1200]:grid-cols-3!"
+            : "flex flex-col",
+        )}
+      >
         {tags.length > 0 ? (
           tags.map((tag) => <TagCard key={tag.id} tag={tag} />)
         ) : (

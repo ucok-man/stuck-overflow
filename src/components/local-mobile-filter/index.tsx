@@ -51,11 +51,11 @@ export default function LocalMobileFilter(props: Props) {
           className={cn(
             "h-[56px]! max-w-sm px-4 py-3",
             "border-light bg-light-800 dark:bg-dark-400/60!",
-            "shadow-none",
+            "cursor-pointer shadow-none",
             props.triggerClass,
           )}
         >
-          <div className="flex w-full gap-4">
+          <div className="flex w-full items-center gap-4">
             <Filter className="text-light-500 mr-1 size-6 flex-shrink-0" />
             {selectedFilter ? (
               <div className="font-paragraph-regular bg-light-850 text-primary/85 dark:bg-dark-400/60 dark:text-light-700 rounded-sm px-2.5 py-1.5 text-sm">

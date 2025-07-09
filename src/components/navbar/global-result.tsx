@@ -10,11 +10,11 @@ import GlobalFilter from "./global-filter";
 
 export default function GlobalResult() {
   const searchParams = useSearchParams();
-  const global = searchParams.get("global");
+  const search = searchParams.get("search");
   const type = searchParams.get("type") as GlobalFilterType | null;
 
-  const { data, isFetching, error } = api.common.search.useQuery({
-    query: global,
+  const { data, isPending, error } = api.common.search.useQuery({
+    query: search,
     type: type,
   });
 
@@ -34,7 +34,7 @@ export default function GlobalResult() {
   };
 
   const Content = () => {
-    if (isFetching) {
+    if (isPending) {
       return (
         <div className="flex-center flex-col px-5">
           <Loader2 className="text-primary-500 my-2 h-10 w-10 animate-spin" />

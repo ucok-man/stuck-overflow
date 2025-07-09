@@ -29,6 +29,7 @@ export default async function CommunityPage(props: Props) {
     filter: USER_FILTERS.find((val) => val.value === searchParams.filter)
       ?.value as UserFilterType | undefined,
     page: searchParams.page,
+    pageSize: "9",
   });
 
   return (
@@ -52,8 +53,10 @@ export default async function CommunityPage(props: Props) {
       {/* TODO: complete the grid layout */}
       <section
         className={cn(
-          "mt-12",
-          users.length > 0 ? "grid gap-3 xl:grid-cols-4" : "flex w-full",
+          "mt-10 w-full",
+          users.length
+            ? "grid grid-cols-1 gap-4 min-[520]:grid-cols-2! min-[1200]:grid-cols-3!"
+            : "flex flex-col",
         )}
       >
         {users.length > 0 ? (

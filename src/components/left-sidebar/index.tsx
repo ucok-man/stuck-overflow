@@ -13,7 +13,7 @@ export default function LeftSidebar() {
   const pathname = usePathname();
 
   return (
-    <section className="bg-light-900_dark-200 border-light custom-scrollbar shadow-light-300 sticky top-0 left-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-36 max-sm:hidden lg:w-[266px] dark:shadow-none">
+    <section className="bg-light-900 dark:bg-dark-200 border-light custom-scrollbar shadow-light-400 sticky top-0 left-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-36 max-sm:hidden lg:w-[266px] dark:shadow-none">
       <div className="flex flex-1 flex-col gap-6">
         {SIDEBAR_LINKS.map((item) => {
           const isActive =
