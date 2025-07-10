@@ -35,7 +35,7 @@ export default function RemoveButton({ questionId }: Props) {
             },
 
             onError: () => {
-              toast.error("Failed to execute action. Please try again later!");
+              toast.error("Oops! Please try again in a bit 😊");
             },
           },
         );

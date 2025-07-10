@@ -40,7 +40,7 @@ export default function RootLayout({
           <ThemeProvider>
             <AuthProvider>
               {children}
-              <Toaster />
+              <Toaster theme="system" className="" />
             </AuthProvider>
           </ThemeProvider>
         </TRPCReactProvider>

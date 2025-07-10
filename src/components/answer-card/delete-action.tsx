@@ -33,9 +33,7 @@ export default function DeleteAction({ answerId }: Props) {
                 toast.success("Success deleting answer.");
               },
               onError: () => {
-                toast.error(
-                  "Sorry we have problem in our server. Please try again later!",
-                );
+                toast.error("Oops! Please try again in a bit 😊");
               },
             },
           );

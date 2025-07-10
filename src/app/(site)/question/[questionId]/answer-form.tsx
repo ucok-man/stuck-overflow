@@ -17,6 +17,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { Question } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -32,6 +34,9 @@ type Props = {
 };
 
 export default function AnswerForm({ question }: Props) {
+  const [isRefreshing, startTransition] = useTransition();
+  const router = useRouter();
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,11 +60,12 @@ export default function AnswerForm({ question }: Props) {
           });
           form.reset();
           toast.success("Success creating answer");
+          startTransition(() => {
+            router.refresh();
+          });
         },
         onError: () => {
-          toast.error(
-            "Failed to perform delete answer. Please try again shortly!",
-          );
+          toast.error("Oops! Please try again in a bit 😊");
         },
       },
     );
@@ -103,6 +109,7 @@ export default function AnswerForm({ question }: Props) {
   //   };
 
   const isSubmittingAI = false;
+  const isActionLoading = createAnswer.isPending || isRefreshing;
 
   return (
     <div>
@@ -143,6 +150,7 @@ export default function AnswerForm({ question }: Props) {
               className="btn! max-xs:w-full border-light-2 text-primary-500 dark:text-primary-500 cursor-pointer gap-1.5 rounded-md px-4 py-2.5 shadow-none"
               onClick={handleGenerateAI}
               type="button"
+              disabled={isActionLoading} // TODO: add is submiting ai as pending also
             >
               {isSubmittingAI ? (
                 <>Generating...</>
@@ -163,7 +171,7 @@ export default function AnswerForm({ question }: Props) {
             <Button
               type="submit"
               className="bg-primary-gradient xs:w-fit w-full cursor-pointer text-white"
-              disabled={createAnswer.isPending}
+              disabled={isActionLoading} // TODO: add is submiting ai as pending also
             >
               {createAnswer.isPending ? "Submitting..." : "Submit"}
             </Button>

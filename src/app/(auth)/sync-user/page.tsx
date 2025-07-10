@@ -44,7 +44,8 @@ export default async function SyncUserPage() {
       <div>
         <h1>Synchronization Failed</h1>
         <p>
-          Could not sync your account to our database. Please try again later.
+          Could not sync your account to our database. Please try again in a bit
+          😊
         </p>
       </div>
     );

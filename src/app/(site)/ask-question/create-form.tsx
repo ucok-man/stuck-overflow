@@ -50,7 +50,7 @@ export default function CreateForm() {
   const onSubmit = (data: FormData) => {
     createQuestion.mutate(data, {
       onSuccess: (question) => {
-        toast.success("Success creating question.");
+        toast.success("Success posting your question.");
         queryclient.refetchQueries({
           type: "active",
         });
@@ -60,7 +60,7 @@ export default function CreateForm() {
         });
       },
       onError: () => {
-        toast.error("Failed to posing question. Please try again shortly!");
+        toast.error("Oops! Please try again in a bit 😊");
       },
     });
   };

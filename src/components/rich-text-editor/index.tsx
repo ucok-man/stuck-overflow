@@ -164,7 +164,7 @@ export default function RichTextEditor(props: Props) {
   >(null);
   const { startUpload } = useUploadThing("imageUploader", {
     onUploadError: () => {
-      toast.error("Failed to upload image. Please try again later!");
+      toast.error("Oops! Please try again in a bit 😊");
     },
     onUploadProgress: (progress) => {
       if (onProgressRef.current) {

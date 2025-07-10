@@ -446,9 +446,6 @@ export const questionRouter = createTRPCRouter({
           message: `No question record found`,
         });
       }
-
-      console.log({ question });
-
       return question;
     }),
 
@@ -814,8 +811,6 @@ export const questionRouter = createTRPCRouter({
         }
 
         const isDownvoted = question?.downvotes.length > 0;
-
-        console.log({ isDownvoted });
 
         if (isDownvoted) {
           /* ------------------------ Remove downvote ------------------------ */
