@@ -115,7 +115,7 @@ export const questionRouter = createTRPCRouter({
         const tags = [...new Set(interactions.map((i) => i.tags).flat())];
 
         params.where!.tags = {
-          every: {
+          some: {
             name: {
               in: tags.map((t) => t.name),
             },
@@ -902,31 +902,62 @@ export const questionRouter = createTRPCRouter({
             },
           });
 
-          await tx.interaction.upsert({
+          const interaction = await tx.interaction.findFirst({
             where: {
-              userId_questionId: {
-                userId: ctx.user.id,
-                questionId: question.id,
-              },
-            },
-            create: {
               actions: {
-                set: ["SAVE_QUESTION"],
+                has: "SAVE_QUESTION",
               },
               questionId: question.id,
               userId: ctx.user.id,
-              tags: {
-                connect: question.tags,
-              },
-            },
-            update: {
-              actions: {
-                push: "SAVE_QUESTION",
-              },
             },
           });
+
+          if (interaction && interaction.actions.length > 1) {
+            const actions = interaction.actions.filter(
+              (r) => r !== "SAVE_QUESTION",
+            );
+            await tx.interaction.update({
+              where: {
+                id: interaction.id,
+              },
+              data: {
+                actions: actions,
+              },
+            });
+          } else if (interaction && interaction.actions.length === 1) {
+            await tx.interaction.delete({
+              where: {
+                id: interaction.id,
+              },
+            });
+          }
+
           return;
         }
+
+        await tx.interaction.upsert({
+          where: {
+            userId_questionId: {
+              userId: ctx.user.id,
+              questionId: question.id,
+            },
+          },
+          create: {
+            actions: {
+              set: ["SAVE_QUESTION"],
+            },
+            questionId: question.id,
+            userId: ctx.user.id,
+            tags: {
+              connect: question.tags,
+            },
+          },
+          update: {
+            actions: {
+              push: "SAVE_QUESTION",
+            },
+          },
+        });
 
         await tx.question.update({
           where: { id: question.id },
@@ -936,36 +967,6 @@ export const questionRouter = createTRPCRouter({
             },
           },
         });
-
-        const interaction = await tx.interaction.findFirst({
-          where: {
-            actions: {
-              has: "SAVE_QUESTION",
-            },
-            questionId: question.id,
-            userId: ctx.user.id,
-          },
-        });
-
-        if (interaction && interaction.actions.length > 1) {
-          const actions = interaction.actions.filter(
-            (r) => r !== "SAVE_QUESTION",
-          );
-          await tx.interaction.update({
-            where: {
-              id: interaction.id,
-            },
-            data: {
-              actions: actions,
-            },
-          });
-        } else if (interaction && interaction.actions.length === 1) {
-          await tx.interaction.delete({
-            where: {
-              id: interaction.id,
-            },
-          });
-        }
       });
     }),
 });

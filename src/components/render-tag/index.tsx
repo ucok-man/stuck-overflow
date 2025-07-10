@@ -28,7 +28,7 @@ export default function RenderTag({
       }}
       className="z-20 flex justify-between gap-2"
     >
-      <Badge className="font-subtle-medium bg-light-800_dark-300 text-light-400_light-500 cursor-pointer rounded-md border-none px-4 py-2 uppercase">
+      <Badge className="font-subtle-medium bg-light-800_dark-300 text-light-400_light-500 cursor-pointer rounded-md border-none px-4 py-2 text-xs uppercase">
         {name}
       </Badge>
 

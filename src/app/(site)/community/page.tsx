@@ -24,6 +24,7 @@ type Props = {
 
 export default async function CommunityPage(props: Props) {
   const searchParams = await props.searchParams;
+
   const users = await api.user.getAll({
     query: searchParams.query,
     filter: USER_FILTERS.find((val) => val.value === searchParams.filter)
@@ -50,7 +51,6 @@ export default async function CommunityPage(props: Props) {
         <LocalFilter filters={USER_FILTERS} containerClass="hidden md:flex" />
       </div>
 
-      {/* TODO: complete the grid layout */}
       <section
         className={cn(
           "mt-10 w-full",

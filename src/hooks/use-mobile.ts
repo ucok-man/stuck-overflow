@@ -1,6 +1,6 @@
 import * as React from "react";
 
-// const MOBILE_BREAKPOINT = 968;
+const MOBILE_BREAKPOINT = 768;
 
 export function useMobile({ breakpoint }: { breakpoint: number }) {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
@@ -15,7 +15,13 @@ export function useMobile({ breakpoint }: { breakpoint: number }) {
     mql.addEventListener("change", onChange);
     setIsMobile(window.innerWidth < breakpoint);
     return () => mql.removeEventListener("change", onChange);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return !!isMobile;
+}
+
+/* --------------------- shadcn compatibility --------------------- */
+export function useIsMobile() {
+  return useMobile({ breakpoint: MOBILE_BREAKPOINT });
 }

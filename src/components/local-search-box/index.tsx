@@ -22,38 +22,26 @@ export default function LocalSearchBox(props: Props) {
   const [debouncedSearch] = useDebounceValue(search, 300);
 
   useEffect(() => {
-    if (debouncedSearch.trim()) {
+    const currentQuery = searchParams.get("query") ?? "";
+
+    if (debouncedSearch.trim() && debouncedSearch.trim() !== currentQuery) {
       const url = pushUrlQuery({
         searchParams: searchParams.toString(),
         items: [
-          {
-            key: "query",
-            value: debouncedSearch,
-          },
-          {
-            key: "page",
-            value: "1",
-          },
+          { key: "query", value: debouncedSearch },
+          { key: "page", value: "1" },
         ],
       });
       router.push(url, { scroll: false });
-      return;
+    } else if (!debouncedSearch.trim() && currentQuery) {
+      const url = removeUrlQuery({
+        searchParams: searchParams.toString(),
+        keysToRemove: ["query"],
+      });
+      router.push(url, { scroll: false });
     }
 
-    // if (!searchParams.get("filter")) {
-    //   const url = removeUrlQuery({
-    //     searchParams: searchParams.toString(),
-    //     keysToRemove: ["query", "page"],
-    //   });
-    //   router.push(url, { scroll: false });
-    //   return;
-    // }
-
-    const url = removeUrlQuery({
-      searchParams: searchParams.toString(),
-      keysToRemove: ["query"],
-    });
-    router.push(url, { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
 
   return (

@@ -479,7 +479,7 @@ async function main() {
       id: "507f1f77bcf86cd799439011",
       title: "How to deploy a React app to Netlify?",
       content:
-        "What steps are required to deploy a React application on Netlify?",
+        "<p>What steps are required to deploy a React application on Netlify?</p>",
       views: 120,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.React, TagEnum.Netlify, TagEnum.SASS],
@@ -491,7 +491,7 @@ async function main() {
       id: "507f1f77bcf86cd799439012",
       title: "Best practices for MongoDB indexing?",
       content:
-        "How can I optimize MongoDB queries with proper indexing techniques?",
+        "<p>How can I optimize MongoDB queries with proper indexing techniques?</p>",
       views: 340,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.MongoDB, TagEnum.Database],
@@ -503,7 +503,7 @@ async function main() {
       id: "507f1f77bcf86cd799439013",
       title: "How to secure a Node.js API with JWT?",
       content:
-        "What is the best way to implement JWT authentication in a Node.js API?",
+        "<p>What is the best way to implement JWT authentication in a Node.js API?</p>",
       views: 410,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.NodeJs, TagEnum.JWT, TagEnum.Authentication],
@@ -515,7 +515,7 @@ async function main() {
       id: "507f1f77bcf86cd799439014",
       title: "Managing global state with Redux?",
       content:
-        "How do I manage global state efficiently in a large-scale React application using Redux?",
+        "<p>How do I manage global state efficiently in a large-scale React application using Redux?</p>",
       views: 230,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.React, TagEnum.Redux],
@@ -527,7 +527,7 @@ async function main() {
       id: "507f1f77bcf86cd799439015",
       title: "Handling concurrency in Node.js applications?",
       content:
-        "What are the best practices for handling concurrent requests in a Node.js application?",
+        "<p>What are the best practices for handling concurrent requests in a Node.js application?</p>",
       views: 320,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.NodeJs, TagEnum.Concurrency, TagEnum.Performance],
@@ -539,7 +539,7 @@ async function main() {
       id: "507f1f77bcf86cd799439016",
       title: "How to set up a TypeScript project for Node.js?",
       content:
-        "What are the necessary steps to configure a TypeScript project for Node.js development?",
+        "<p>What are the necessary steps to configure a TypeScript project for Node.js development?</p>",
       views: 250,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.TypeScript, TagEnum.NodeJs, TagEnum.ProjectSetup],
@@ -551,7 +551,7 @@ async function main() {
       id: "507f1f77bcf86cd799439017",
       title: "How to implement pagination in GraphQL?",
       content:
-        "What is the best way to implement pagination for queries in GraphQL?",
+        "<p>What is the best way to implement pagination for queries in GraphQL?</p>",
       views: 470,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.GraphQL, TagEnum.Python, TagEnum.Pagination],
@@ -563,7 +563,7 @@ async function main() {
       id: "507f1f77bcf86cd799439018",
       title: "What is the difference between Docker and Kubernetes?",
       content:
-        "Can someone explain the key differences between Docker and Kubernetes in managing containers?",
+        "<p>Can someone explain the key differences between Docker and Kubernetes in managing containers?</p>",
       views: 540,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.Docker, TagEnum.Kubernetes, TagEnum.Containers],
@@ -575,7 +575,7 @@ async function main() {
       id: "507f1f77bcf86cd799439019",
       title: "How to structure a large-scale Angular application?",
       content:
-        "What is the recommended approach to structure a large-scale Angular application for maintainability?",
+        "<p>What is the recommended approach to structure a large-scale Angular application for maintainability?</p>",
       views: 330,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.Angular, TagEnum.ProjectStructure, TagEnum.Architecture],
@@ -584,7 +584,7 @@ async function main() {
       id: "507f1f77bcf86cd79943901a",
       title: "How to set up a CI/CD pipeline for Node.js?",
       content:
-        "What are the best practices to set up a continuous integration and deployment pipeline for Node.js applications?",
+        "<p>What are the best practices to set up a continuous integration and deployment pipeline for Node.js applications?</p>",
       views: 670,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.NodeJs, TagEnum.CICD, TagEnum.Deployment],
@@ -592,7 +592,8 @@ async function main() {
     {
       id: "507f1f77bcf86cd79943901b",
       title: "What are the benefits of using TypeScript in large projects?",
-      content: "Why should I consider using TypeScript for larger codebases?",
+      content:
+        "<p>Why should I consider using TypeScript for larger codebases?</p>",
       views: 170,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.TypeScript, TagEnum.ProjectSetup],
@@ -601,7 +602,7 @@ async function main() {
       id: "507f1f77bcf86cd79943901c",
       title: "How to secure JWT tokens in a web app?",
       content:
-        "What are the key considerations for securing JWT tokens in a web application?",
+        "<p>What are the key considerations for securing JWT tokens in a web application?</p>",
       views: 360,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.JWT, TagEnum.Security, TagEnum.Authentication],
@@ -609,7 +610,7 @@ async function main() {
     {
       id: "507f1f77bcf86cd79943901d",
       title: "How to implement GraphQL in an existing REST API?",
-      content: "What are the steps for migrating a REST API to GraphQL?",
+      content: "<p>What are the steps for migrating a REST API to GraphQL?</p>",
       views: 260,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.GraphQL, TagEnum.ApiDesign],
@@ -618,7 +619,7 @@ async function main() {
       id: "507f1f77bcf86cd79943901e",
       title: "Scaling Node.js applications with Kubernetes?",
       content:
-        "What are the best practices for scaling Node.js applications using Kubernetes?",
+        "<p>What are the best practices for scaling Node.js applications using Kubernetes?</p>",
       views: 280,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.NodeJs, TagEnum.Kubernetes, TagEnum.Scaling],
@@ -627,7 +628,7 @@ async function main() {
       id: "507f1f77bcf86cd79943901f",
       title: "How to use Docker in microservices architecture?",
       content:
-        "What are the key considerations for using Docker in a microservices-based architecture?",
+        "<p>What are the key considerations for using Docker in a microservices-based architecture?</p>",
       views: 340,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.Docker, TagEnum.Microservices, TagEnum.Containers],
@@ -635,7 +636,8 @@ async function main() {
     {
       id: "507f1f77bcf86cd799439020",
       title: "Best practices for securing AWS resources?",
-      content: "What are the top security practices when working with AWS?",
+      content:
+        "<p>What are the top security practices when working with AWS?</p>",
       views: 240,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.AWS, TagEnum.Security],
@@ -644,7 +646,7 @@ async function main() {
       id: "507f1f77bcf86cd799439021",
       title: "How to automate deployments using CI/CD pipelines?",
       content:
-        "What are the best tools and techniques for automating deployments using CI/CD?",
+        "<p>What are the best tools and techniques for automating deployments using CI/CD?</p>",
       views: 230,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.CICD, TagEnum.Automation, TagEnum.Deployment],
@@ -653,7 +655,7 @@ async function main() {
       id: "507f1f77bcf86cd799439022",
       title: "How to optimize React app performance?",
       content:
-        "What techniques can be employed to enhance the performance of a React app?",
+        "<p>What techniques can be employed to enhance the performance of a React app?</p>",
       views: 190,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.React, TagEnum.Performance, TagEnum.Optimization],
@@ -662,7 +664,7 @@ async function main() {
       id: "507f1f77bcf86cd799439023",
       title: "How to integrate third-party APIs in a React app?",
       content:
-        "What is the best way to integrate third-party APIs into a React application?",
+        "<p>What is the best way to integrate third-party APIs into a React application?</p>",
       views: 360,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.React, TagEnum.ApiDesign],
@@ -671,7 +673,7 @@ async function main() {
       id: "507f1f77bcf86cd799439024",
       title: "How to securely store JWT tokens?",
       content:
-        "What is the best way to securely store JWT tokens in a web or mobile application?",
+        "<p>What is the best way to securely store JWT tokens in a web or mobile application?</p>",
       views: 370,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.JWT, TagEnum.Security],
@@ -680,7 +682,7 @@ async function main() {
       id: "507f1f77bcf86cd799439025",
       title: "How to use AWS Lambda with Django?",
       content:
-        "What is the best way to integrate AWS Lambda functions into a Django project?",
+        "<p>What is the best way to integrate AWS Lambda functions into a Django project?</p>",
       views: 190,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.AWS, TagEnum.AWSLambda, TagEnum.Django],
@@ -689,7 +691,7 @@ async function main() {
       id: "507f1f77bcf86cd799439026",
       title: "How to use Python with GraphQL?",
       content:
-        "What is the recommended way to implement GraphQL in a Python-based web application?",
+        "<p>What is the recommended way to implement GraphQL in a Python-based web application?</p>",
       views: 250,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.Python, TagEnum.GraphQL],
@@ -698,7 +700,7 @@ async function main() {
       id: "507f1f77bcf86cd799439027",
       title: "How to manage state in a Redux-based application?",
       content:
-        "What are the best practices for managing state in a complex Redux-based application?",
+        "<p>What are the best practices for managing state in a complex Redux-based application?</p>",
       views: 410,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.Redux, TagEnum.StateManagement],
@@ -707,7 +709,7 @@ async function main() {
       id: "507f1f77bcf86cd799439028",
       title: "How to containerize a Flask app using Docker?",
       content:
-        "What is the process of creating a Docker container for a Flask application?",
+        "<p>What is the process of creating a Docker container for a Flask application?</p>",
       views: 220,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.Flask, TagEnum.Docker, TagEnum.Containers],
@@ -716,7 +718,7 @@ async function main() {
       id: "507f1f77bcf86cd799439029",
       title: "How to optimize MongoDB schemas?",
       content:
-        "What are the best strategies to optimize MongoDB schemas for high-performance queries?",
+        "<p>What are the best strategies to optimize MongoDB schemas for high-performance queries?</p>",
       views: 290,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.MongoDB, TagEnum.SchemaDesign, TagEnum.Database],
@@ -724,7 +726,8 @@ async function main() {
     {
       id: "507f1f77bcf86cd79943902a",
       title: "How to optimize GraphQL queries for better performance?",
-      content: "What techniques can be used to optimize GraphQL queries?",
+      content:
+        "<p>What techniques can be used to optimize GraphQL queries?</p>",
       views: 280,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.GraphQL, TagEnum.Optimization],
@@ -733,7 +736,7 @@ async function main() {
       id: "507f1f77bcf86cd79943902b",
       title: "How to structure a large-scale SASS project?",
       content:
-        "What are the recommended best practices for structuring a large-scale SASS project for maintainability?",
+        "<p>What are the recommended best practices for structuring a large-scale SASS project for maintainability?</p>",
       views: 340,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.SASS, TagEnum.ProjectStructure, TagEnum.CSS],
@@ -742,7 +745,7 @@ async function main() {
       id: "507f1f77bcf86cd79943902c",
       title: "Best practices for handling concurrency in Kubernetes?",
       content:
-        "What are the best practices for managing concurrency and scaling in a Kubernetes-based infrastructure?",
+        "<p>What are the best practices for managing concurrency and scaling in a Kubernetes-based infrastructure?</p>",
       views: 410,
       authorId: pickRandom(questionUsers),
       tags: [TagEnum.Kubernetes, TagEnum.Concurrency, TagEnum.Scaling],
@@ -772,38 +775,38 @@ async function main() {
     {
       id: "67081df118a54aa5bf02d7b3",
       content:
-        "To deploy a React app on Netlify, first create a build of your app using `npm run build`. Then, log in to your Netlify account, click 'New site from Git', and connect your repository. Choose the branch to deploy and set the build command to `npm run build` and the publish directory to `build`. Finally, click 'Deploy site' to finish.",
+        "<p>To deploy a React app on Netlify, first create a build of your app using `npm run build`. Then, log in to your Netlify account, click 'New site from Git', and connect your repository. Choose the branch to deploy and set the build command to `npm run build` and the publish directory to `build`. Finally, click 'Deploy site' to finish.</p>",
 
       questionId: QuestionEnum.Q0,
     },
     {
       id: "67081e67a613a21f86179440",
       content:
-        "You can also deploy your React app on Netlify by dragging and dropping your build folder into the Netlify dashboard. This is a quick way to deploy without setting up a Git repository. Just make sure your app runs correctly by testing it locally first.",
+        "<p>You can also deploy your React app on Netlify by dragging and dropping your build folder into the Netlify dashboard. This is a quick way to deploy without setting up a Git repository. Just make sure your app runs correctly by testing it locally first.</p>",
       questionId: QuestionEnum.Q0,
     },
     {
       id: "67081e817d9817b77f56003f",
       content:
-        "To optimize MongoDB queries, you should create indexes on fields that are frequently queried, such as those used in filters and sorts. Compound indexes can also be useful when you need to query multiple fields. Monitor your query performance using the `explain()` method to identify which queries would benefit from indexing.",
+        "<p>To optimize MongoDB queries, you should create indexes on fields that are frequently queried, such as those used in filters and sorts. Compound indexes can also be useful when you need to query multiple fields. Monitor your query performance using the `explain()` method to identify which queries would benefit from indexing.</p>",
       questionId: QuestionEnum.Q1,
     },
     {
       id: "67081e92c3cf6c6f5b42c3b6",
       content:
-        "It's important to keep in mind that while indexes can speed up read operations, they can also slow down write operations. Therefore, you should only index fields that are critical for performance. Additionally, consider using TTL (Time-To-Live) indexes for data that only needs to be retained for a specific duration.",
+        "<p>It's important to keep in mind that while indexes can speed up read operations, they can also slow down write operations. Therefore, you should only index fields that are critical for performance. Additionally, consider using TTL (Time-To-Live) indexes for data that only needs to be retained for a specific duration.</p>",
       questionId: QuestionEnum.Q1,
     },
     {
       id: "67081ea73c8bd3d4ff6ae1b6",
       content:
-        "Regularly analyze your indexes and remove any that are unused to reduce storage costs and improve performance. Use the `db.collection.getIndexes()` method to review existing indexes and assess their usage with the help of the query profiler to understand the impact on performance.",
+        "<p>Regularly analyze your indexes and remove any that are unused to reduce storage costs and improve performance. Use the `db.collection.getIndexes()` method to review existing indexes and assess their usage with the help of the query profiler to understand the impact on performance.</p>",
       questionId: QuestionEnum.Q1,
     },
     {
       id: "67081ebbde23aaccffa9ab09",
       content:
-        "To implement JWT authentication in a Node.js API, start by installing the `jsonwebtoken` package. First, create a login route that verifies user credentials and, upon successful authentication, generates a JWT using `jsonwebtoken.sign()`, including a secret key and user information. Send this token back to the client. For protected routes, use middleware to verify the token with `jsonwebtoken.verify()`. Ensure that you handle token expiration and refresh tokens appropriately for enhanced security.",
+        "<p>To implement JWT authentication in a Node.js API, start by installing the `jsonwebtoken` package. First, create a login route that verifies user credentials and, upon successful authentication, generates a JWT using `jsonwebtoken.sign()`, including a secret key and user information. Send this token back to the client. For protected routes, use middleware to verify the token with `jsonwebtoken.verify()`. Ensure that you handle token expiration and refresh tokens appropriately for enhanced security.</p>",
       questionId: QuestionEnum.Q2,
     },
   ];

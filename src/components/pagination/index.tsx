@@ -10,7 +10,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
 import { useIsClient } from "usehooks-ts";
 
@@ -19,6 +19,7 @@ type Props = {
 };
 
 export default function Pagination({ page }: Props) {
+  const router = useRouter();
   const isClient = useIsClient();
   const searchParams = useSearchParams();
 
@@ -44,10 +45,17 @@ export default function Pagination({ page }: Props) {
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={prevlink()}
-            className={cn("hover:text-primary-500! dark:text-light-700/80", {
-              "disabled pointer-events-none": page <= 1,
-            })}
+            className={cn(
+              "hover:text-primary-500! dark:text-light-700/80 cursor-pointer",
+              {
+                "disabled pointer-events-none": page <= 1,
+              },
+            )}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(prevlink());
+            }}
           />
         </PaginationItem>
 
@@ -63,8 +71,14 @@ export default function Pagination({ page }: Props) {
 
         <PaginationItem>
           <PaginationNext
-            className={cn("hover:text-primary-500! dark:text-light-700/80")}
-            href={nextLink()}
+            className={cn(
+              "hover:text-primary-500! dark:text-light-700/80 cursor-pointer",
+            )}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(nextLink());
+            }}
           />
         </PaginationItem>
       </PaginationContent>

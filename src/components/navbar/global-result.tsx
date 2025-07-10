@@ -13,7 +13,7 @@ export default function GlobalResult() {
   const search = searchParams.get("search");
   const type = searchParams.get("type") as GlobalFilterType | null;
 
-  const { data, isPending, error } = api.common.search.useQuery({
+  const { data, isPending } = api.common.search.useQuery({
     query: search,
     type: type,
   });

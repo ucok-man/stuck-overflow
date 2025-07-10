@@ -15,9 +15,9 @@ export default async function UserCard({ user }: Props) {
   return (
     <Link
       href={`/profile/${user.clerkId}`}
-      className="shadow-light-100_dark-none max-xs:min-w-full w-full"
+      className="shadow-light-100_dark-none max-xs:min-w-full h-full w-full"
     >
-      <article className="bg-light-900_dark-200 border-light flex w-full flex-col items-center justify-center rounded-2xl border p-8">
+      <article className="bg-light-900_dark-200 border-light flex h-full w-full flex-col items-center justify-center rounded-2xl border p-8">
         <Image
           src={user.picture}
           alt="user profile picture"
@@ -37,7 +37,7 @@ export default async function UserCard({ user }: Props) {
 
         <div className="mt-5">
           {toptags.length > 0 ? (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {toptags.map(({ tag }) => (
                 <RenderTag key={tag.id} id={tag.id} name={tag.name} />
               ))}

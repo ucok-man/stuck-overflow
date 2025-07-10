@@ -45,6 +45,7 @@ export default function GlobalSearch() {
       });
       router.push(url, { scroll: false });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
 
   return (

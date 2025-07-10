@@ -6,9 +6,6 @@ const compat = new FlatCompat({
 });
 
 export default tseslint.config(
-  {
-    ignores: [".next"],
-  },
   ...compat.extends("next/core-web-vitals"),
   {
     files: ["**/*.ts", "**/*.tsx"],
@@ -44,5 +41,8 @@ export default tseslint.config(
         projectService: true,
       },
     },
+  },
+  {
+    ignores: [".next", "src/components/ui"],
   },
 );

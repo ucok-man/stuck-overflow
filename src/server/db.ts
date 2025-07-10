@@ -7,7 +7,7 @@ const createPrismaClient = () =>
     log:
       env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     transactionOptions: {
-      timeout: 30000,
+      // timeout: ,
     },
   });
 

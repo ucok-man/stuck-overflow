@@ -4,6 +4,7 @@ import Link from "next/link";
 import RenderTag from "../render-tag";
 
 export default async function RightSidebar() {
+  console.log("RUN RIGHT SIDEBAR");
   const questions = await api.question.getAll({
     filter: "most_upvotes",
     pageSize: "5",

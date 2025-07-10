@@ -34,6 +34,8 @@ export default async function HomePage(props: Props) {
     page: searchParams.page,
   });
 
+  console.log("RUN HOME");
+
   return (
     <div>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -84,4 +86,6 @@ export default async function HomePage(props: Props) {
       )}
     </div>
   );
+
+  // return <div>{JSON.stringify(searchParams)}</div>;
 }

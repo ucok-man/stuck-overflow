@@ -247,6 +247,30 @@ export const userRouter = createTRPCRouter({
       };
     }),
 
+  sync: publicProcedure
+    .input(
+      z.object({
+        clerkId: z.string().trim(),
+        email: z.string().email(),
+        name: z.string().trim(),
+        username: z.string().trim(),
+        picture: z.string().trim(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          clerkId: input.clerkId,
+        },
+      });
+
+      if (user) return user;
+
+      return await ctx.db.user.create({
+        data: input,
+      });
+    }),
+
   getByClerkId: privatProcedure
     .input(z.object({ clerkId: z.string().trim() }))
     .query(async ({ ctx }) => {

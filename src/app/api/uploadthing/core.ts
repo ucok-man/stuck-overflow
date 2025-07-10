@@ -10,7 +10,7 @@ export const uploadthingRouter = {
       maxFileSize: "4MB",
       maxFileCount: 1,
     },
-  }).onUploadComplete(async ({ metadata, file }) => {
+  }).onUploadComplete(async ({ file }) => {
     return {
       message: `Upload success for file #${file.name}`,
       url: file.ufsUrl,
