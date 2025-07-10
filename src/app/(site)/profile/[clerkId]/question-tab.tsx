@@ -14,7 +14,7 @@ export default async function QuestionTab({ clerkId, page }: Props) {
   });
 
   return (
-    <div>
+    <div className="space-y-3">
       {questions.length > 0 && (
         <>
           {questions.map((question) => (

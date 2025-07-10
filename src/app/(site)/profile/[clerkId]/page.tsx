@@ -147,7 +147,10 @@ export default async function ViewProfilePage(props: Props) {
               }
             />
           </TabsContent>
-          <TabsContent value="answers" className="flex w-full flex-col gap-6">
+          <TabsContent
+            value="answers"
+            className="mt-5 flex w-full flex-col gap-6"
+          >
             <AnswerTab
               clerkId={profile.user.clerkId}
               page={

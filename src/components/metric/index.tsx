@@ -1,6 +1,8 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Props = {
   imgUrl: string;
@@ -13,6 +15,8 @@ type Props = {
 };
 
 export default function Metric(props: Props) {
+  const router = useRouter();
+
   const metricContent = (
     <>
       <Image
@@ -40,9 +44,17 @@ export default function Metric(props: Props) {
 
   if (props.href) {
     return (
-      <Link href={props.href} className="flex-center gap-1">
+      <div
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          router.push(props.href ?? "");
+        }}
+        className="flex-center cursor-pointer gap-1"
+      >
         {metricContent}
-      </Link>
+      </div>
     );
   }
 
