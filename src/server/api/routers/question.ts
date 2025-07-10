@@ -15,7 +15,13 @@ export const questionRouter = createTRPCRouter({
       z.object({
         query: z.string().trim().nullable().optional(),
         filter: z
-          .enum(["recommended", "newest", "frequent", "unanswered"])
+          .enum([
+            "recommended",
+            "newest",
+            "frequent",
+            "unanswered",
+            "most_upvotes",
+          ])
           .nullable()
           .optional()
           .default("newest"),
@@ -132,6 +138,14 @@ export const questionRouter = createTRPCRouter({
       if (input.filter === "unanswered") {
         params.where!.answers = {
           none: {},
+        };
+      }
+
+      if (input.filter === "most_upvotes") {
+        params.orderBy = {
+          upvotes: {
+            _count: "desc",
+          },
         };
       }
 

@@ -1,5 +1,6 @@
 import LeftSidebar from "@/components/left-sidebar";
 import Navbar from "@/components/navbar";
+import RightSidebar from "@/components/right-sidebar";
 import { type ReactNode } from "react";
 
 type Props = {
@@ -17,7 +18,7 @@ export default function SiteLayout({ children }: Props) {
           <div className="mx-auto w-full max-w-5xl">{children}</div>
         </section>
 
-        {/* <RightSidebar /> */}
+        <RightSidebar />
       </div>
     </main>
   );
