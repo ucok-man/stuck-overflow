@@ -1,9 +1,43 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { openai } from "@/lib/openai";
 import type { Answer, Question, User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { createTRPCRouter, privatProcedure, publicProcedure } from "../trpc";
 
 export const answerRouter = createTRPCRouter({
+  generateFromAi: privatProcedure
+    .input(
+      z.object({
+        content: z.string().trim(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      try {
+        const response = await openai.responses.create({
+          model: "gpt-4o-mini",
+          instructions: `You are a knowledgeable and concise programming assistant.
+              Provide an accurate, clear, and Stack Overflow–style answer to the user's question.
+              Include relevant code examples, explain reasoning, and note best practices.
+              Avoid unnecessary humor or filler.
+              If the answer depends on context, explain the possible cases.
+      
+              IMPORTANT:
+              - Output must be in HTML-compatible format.
+              - Provide only the answer — no extra commentary or meta text.
+              `,
+          input: input.content,
+        });
+        return response.output_text;
+      } catch (error: any) {
+        console.error(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `${error}`,
+        });
+      }
+    }),
+
   getAllByClerkId: privatProcedure
     .input(
       z.object({

@@ -66,6 +66,7 @@ import { MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 // --- Styles ---
 import "@/components/rich-text-editor/index.scss";
 import { useUploadThing } from "@/lib/uploadthing-utils";
+import { useEditorStore } from "@/stores/use-editor-store";
 import { toast } from "sonner";
 
 // import content from "@/components/rich-text-editor/data/content.json";
@@ -158,6 +159,7 @@ export default function RichTextEditor(props: Props) {
   const isMobile = useMobile({ breakpoint: 968 });
   const [mobileView, setMobileView] = React.useState<"main" | "link">("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
+  const { setEditor } = useEditorStore();
 
   const onProgressRef = React.useRef<
     ((event: { progress: number }) => void) | null
@@ -175,6 +177,25 @@ export default function RichTextEditor(props: Props) {
 
   const editor = useEditor({
     immediatelyRender: false,
+    onCreate({ editor }) {
+      setEditor(editor);
+    },
+    onDestroy() {
+      setEditor(null);
+    },
+    onSelectionUpdate({ editor }) {
+      setEditor(editor);
+    },
+    onTransaction({ editor }) {
+      setEditor(editor);
+    },
+    onFocus({ editor }) {
+      setEditor(editor);
+    },
+    onContentError({ editor }) {
+      setEditor(editor);
+    },
+
     editorProps: {
       attributes: {
         autocomplete: "off",
@@ -225,12 +246,15 @@ export default function RichTextEditor(props: Props) {
       if (props.onBlur) {
         props.onBlur(editor.getHTML());
       }
+      setEditor(editor);
     },
     onUpdate: ({ editor }) => {
       if (props.onChange) {
         props.onChange(editor.getHTML());
       }
+      setEditor(editor);
     },
+
     content: props.initialValue,
   });
 

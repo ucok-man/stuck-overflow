@@ -12,6 +12,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { useEditorStore } from "@/stores/use-editor-store";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Question } from "@prisma/client";
@@ -36,6 +37,7 @@ type Props = {
 export default function AnswerForm({ question }: Props) {
   const [isRefreshing, startTransition] = useTransition();
   const router = useRouter();
+  const { editor } = useEditorStore();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -45,6 +47,7 @@ export default function AnswerForm({ question }: Props) {
   });
 
   const createAnswer = api.answer.create.useMutation();
+  const genAnswer = api.answer.generateFromAi.useMutation();
   const queryclient = useQueryClient();
 
   const handleCreateAnswer = async (data: FormData) => {
@@ -72,41 +75,20 @@ export default function AnswerForm({ question }: Props) {
   };
 
   const handleGenerateAI = async () => {
-    console.log("TODO: generate AI answers");
+    genAnswer.mutate(
+      { content: question.content },
+      {
+        onSuccess: (answer) => {
+          editor?.commands.setContent(answer);
+          form.setValue("content", answer);
+          toast.success("Success generating answer 🎉");
+        },
+        onError: () => {
+          toast.error("Oops! Please try again 😊");
+        },
+      },
+    );
   };
-
-  //   const generateAIAnswer = async () => {
-  //     if (!authorId) return;
-
-  //     setSetIsSubmittingAI(true);
-
-  //     try {
-  //       const response = await fetch(
-  //         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`,
-  //         {
-  //           method: "POST",
-  //           body: JSON.stringify({ question }),
-  //         },
-  //       );
-
-  //       const aiAnswer = await response.json();
-
-  //       // Convert plain text to HTML format
-
-  //       const formattedAnswer = aiAnswer.reply.replace(/\n/g, "<br />");
-
-  //       if (editorRef.current) {
-  //         const editor = editorRef.current as any;
-  //         editor.setContent(formattedAnswer);
-  //       }
-
-  //       // Toast...
-  //     } catch (error) {
-  //       console.log(error);
-  //     } finally {
-  //       setSetIsSubmittingAI(false);
-  //     }
-  //   };
 
   const isSubmittingAI = false;
   const isActionLoading = createAnswer.isPending || isRefreshing;
@@ -150,7 +132,7 @@ export default function AnswerForm({ question }: Props) {
               className="btn! max-xs:w-full border-light-2 text-primary-500 dark:text-primary-500 cursor-pointer gap-1.5 rounded-md px-4 py-2.5 shadow-none"
               onClick={handleGenerateAI}
               type="button"
-              disabled={isActionLoading} // TODO: add is submiting ai as pending also
+              disabled={isActionLoading || genAnswer.isPending}
             >
               {isSubmittingAI ? (
                 <>Generating...</>
@@ -171,7 +153,7 @@ export default function AnswerForm({ question }: Props) {
             <Button
               type="submit"
               className="bg-primary-gradient xs:w-fit w-full cursor-pointer text-white"
-              disabled={isActionLoading} // TODO: add is submiting ai as pending also
+              disabled={isActionLoading || genAnswer.isPending}
             >
               {createAnswer.isPending ? "Submitting..." : "Submit"}
             </Button>
