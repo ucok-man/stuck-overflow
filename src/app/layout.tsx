@@ -9,7 +9,7 @@ import AuthProvider from "./_providers/auth-provider";
 import ThemeProvider from "./_providers/theme-provider";
 
 export const metadata: Metadata = {
-  title: "Stuck Overflow | Stack Overflow Clone",
+  title: "Stuck Overflow",
   description:
     "A community-driven platform for asking and answering programming questions. Get help, share knowledge, and collaborate with developers from around the world. Explore topics in web development, mobile app development, algorithms, data structures, and more.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],

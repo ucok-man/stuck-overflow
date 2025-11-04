@@ -1,29 +1,80 @@
-# Create T3 App
+# Stuck Overflow | Stack Overflow Clone
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A modern, full-stack Stack Overflow clone built with Next.js 15, featuring AI-powered answer generation, real-time interactions, and a beautiful dark mode interface.
 
-## What's next? How do I make an app with this?
+**Live** : [https://koalla.ucokman.web.id](https://koalla.ucokman.web.id)
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Quick Start
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+### Prerequisites
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- Node.js 20+
+- PostgreSQL
+- Uploadthing
+- OpenAI Api Keys
+- Bun
 
-## Learn More
+### 1. Clone & Install
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+```bash
+git clone <repo-url>
+cd stuck-overflow
+bun install
+```
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### 2. Get OpenAi Api Keys
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+1. Visit [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+2. Get <OPENAI_API_KEY> by creating new one.
 
-## How do I deploy this?
+### 3. Setup Clerk Authentication
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+1. **Login to Clerk**  
+   Visit [https://dashboard.clerk.com/sign-in](https://dashboard.clerk.com/sign-in)
+
+2. **Create a new application**  
+   Navigate to **Application → Dashboard** and create a new application
+
+3. **Configure sign-in options**  
+   Enable **Email** and **Google** as sign-in methods
+
+4. **Get your API keys**  
+   Go to **Configure → Developers → API Keys** and copy:
+   - `CLERK_PUBLISHABLE_KEY`
+   - `CLERK_SECRET_KEY`
+
+### 4. Setup Uploadthing Storage
+
+1. **Login to Uploadthing**
+   Visit [https://uploadthing.com/sign-in](https://uploadthing.com/sign-in)
+
+2. **Create a new application**
+   Navigate to **Dashboard** and create a new application
+
+3. **Get your Uploadthing Token**  
+   Go to **API Keys** and copy:
+   - `UPLOADTHING_TOKEN`
+
+### 5. Configure Environment Variables
+
+```bash
+cp .env.example .env
+# fill in all the credentials you collected
+```
+
+### 6. Setup Database
+
+```bash
+bunx prisma migrate dev
+```
+
+### 7. Run Development Server
+
+Start the application:
+
+```bash
+bun run dev
+```
+
+**Your app is now running!** 🎊  
+Visit [http://localhost:3000](http://localhost:3000) to see it in action.
