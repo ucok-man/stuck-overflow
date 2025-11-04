@@ -2,7 +2,7 @@
 
 A modern, full-stack Stack Overflow clone built with Next.js 15, featuring AI-powered answer generation, real-time interactions, and a beautiful dark mode interface.
 
-**Live** : [https://koalla.ucokman.web.id](https://koalla.ucokman.web.id)
+**Live** : [https://stuck-overflow-two.vercel.app](https://stuck-overflow-two.vercel.app)
 
 ## Quick Start
 
